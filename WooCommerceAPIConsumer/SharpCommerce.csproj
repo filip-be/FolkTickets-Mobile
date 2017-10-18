@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0B30C4AD-C7E3-47B5-988E-02880533EF76}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpCommerce</RootNamespace>
+    <AssemblyName>WooCommerceAPIConsumer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLCrypto, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d4421c8a4786956c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PCLCrypto.2.0.147\lib\net45\PCLCrypto.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.BCrypt, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\packages\PInvoke.BCrypt.0.3.2\lib\net40\PInvoke.BCrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.Kernel32, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\packages\PInvoke.Kernel32.0.3.2\lib\net40\PInvoke.Kernel32.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.NCrypt, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\packages\PInvoke.NCrypt.0.3.2\lib\net40\PInvoke.NCrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.Windows.Core, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\packages\PInvoke.Windows.Core.0.3.2\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.Windows.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Validation, Version=2.2.0.0, Culture=neutral, PublicKeyToken=2fc06f0d701809a7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Validation.2.2.8\lib\dotnet\Validation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Coupons\Coupon.cs" />
+    <Compile Include="Data\Coupons\CouponBundle.cs" />
+    <Compile Include="Data\Coupons\CouponsBundle.cs" />
+    <Compile Include="Data\Customers\Address.cs" />
+    <Compile Include="Data\Customers\BillingAddress.cs" />
+    <Compile Include="Data\Customers\CustomersBundle.cs" />
+    <Compile Include="Data\Customers\Customer.cs" />
+    <Compile Include="Data\Customers\CustomerBundle.cs" />
+    <Compile Include="Data\Downloads\Download.cs" />
+    <Compile Include="Data\Downloads\DownloadableFile.cs" />
+    <Compile Include="Data\Downloads\DownloadsBundle.cs" />
+    <Compile Include="Data\Orders\OrdersBundle.cs" />
+    <Compile Include="Data\Products\Attribute.cs" />
+    <Compile Include="Data\Products\DefaultAttribute.cs" />
+    <Compile Include="Data\Products\Dimensions.cs" />
+    <Compile Include="Data\Products\Image.cs" />
+    <Compile Include="Data\Products\Product.cs" />
+    <Compile Include="Data\Products\ProductAttribute.cs" />
+    <Compile Include="Data\Products\ProductAttributeBundle.cs" />
+    <Compile Include="Data\Products\ProductAttributesBundle.cs" />
+    <Compile Include="Data\Products\ProductBundle.cs" />
+    <Compile Include="Data\Products\ProductCategoriesBundle.cs" />
+    <Compile Include="Data\Products\ProductCategory.cs" />
+    <Compile Include="Data\Products\ProductCategoryBundle.cs" />
+    <Compile Include="Data\Products\ProductReview.cs" />
+    <Compile Include="Data\Products\ProductReviewsBundle.cs" />
+    <Compile Include="Data\Products\ProductsBundle.cs" />
+    <Compile Include="Services\ProductAttributeService.cs" />
+    <Compile Include="Services\CouponService.cs" />
+    <Compile Include="Services\CustomerService.cs" />
+    <Compile Include="Services\ParameterFilters.cs" />
+    <Compile Include="Services\OrderNotesService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\OrderRefundsService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Services\ProductCategoryService.cs" />
+    <Compile Include="Services\ProductOrderService.cs" />
+    <Compile Include="Services\ProductReviewService.cs" />
+    <Compile Include="Services\ProductService.cs" />
+    <Compile Include="Web\HttpMethod.cs" />
+    <Compile Include="Data\Orders\LineItem.cs" />
+    <Compile Include="Data\Orders\MetaItem.cs" />
+    <Compile Include="Data\Orders\CouponLine.cs" />
+    <Compile Include="Data\Orders\FeeLine.cs" />
+    <Compile Include="Data\Orders\Order.cs" />
+    <Compile Include="Data\Orders\OrderBundle.cs" />
+    <Compile Include="Data\Orders\OrderNote.cs" />
+    <Compile Include="Data\Orders\OrderNoteBundle.cs" />
+    <Compile Include="Data\Orders\OrderNotesBundle.cs" />
+    <Compile Include="Data\Orders\OrderRefund.cs" />
+    <Compile Include="Data\Orders\OrderRefundBundle.cs" />
+    <Compile Include="Data\Orders\OrderRefundsBundle.cs" />
+    <Compile Include="Services\OrderService.cs" />
+    <Compile Include="Data\Orders\OrderStatus.cs" />
+    <Compile Include="Data\Orders\OrderStatuses.cs" />
+    <Compile Include="Data\Orders\OrderStatusesBundle.cs" />
+    <Compile Include="Data\Orders\OrderStatusFilter.cs" />
+    <Compile Include="Data\Orders\PaymentDetails.cs" />
+    <Compile Include="Data\Orders\ShippingLine.cs" />
+    <Compile Include="Data\Orders\TaxLine.cs" />
+    <Compile Include="Data\Orders\Variation.cs" />
+    <Compile Include="Data\Customers\ShippingAddress.cs" />
+    <Compile Include="Services\Service.cs" />
+    <Compile Include="Web\WoocommerceApiDriver.cs" />
+    <Compile Include="WoocommerceApiClient.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\WoocommerceApiUrlGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
