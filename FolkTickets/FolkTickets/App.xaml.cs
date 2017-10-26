@@ -13,7 +13,16 @@ namespace FolkTickets
 		{
 			InitializeComponent();
 
-			MainPage = new Views.MainPage();
+            Current.MainPage = new TabbedPage
+            {
+                Children =
+                {
+                    new NavigationPage(new Views.MainPage())
+                    {
+                        Title = "Browse"
+                    }
+                }
+            };
 		}
 
 		protected override void OnStart ()

@@ -3,19 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:FolkTickets"
              x:Class="FolkTickets.Views.MainPage"
-             Title="Main Page">
-    <StackLayout>
-        <Label Text="Welcome to Xamarin Forms!" 
-           VerticalOptions="Center" 
-           HorizontalOptions="Center"
-               x:Name="WelcomeLabel"/>
-        <Entry Placeholder="WP Login"
+             xmlns:vm="clr-namespace:FolkTickets.ViewModels"
+             Title="{Binding Title}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackLayout 
+            BackgroundColor="{StaticResource Key=LightBackgroundColor}">
+            <Label Text="Welcome to Xamarin Forms!" 
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                x:Name="WelcomeLabel"
+                TextColor="{StaticResource Key=LightTextColor}"/>
+            <Entry Placeholder="WP Login"
                x:Name="Login"/>
-        <Entry Placeholder="WP Password"
+            <Entry Placeholder="WP Password"
                IsPassword="True"
                x:Name="Password"/>
-        <Button Text="Login"
+            <Button Text="Login"
                 x:Name="ButtonLogin"
                 Clicked="ButtonLogin_Clicked"/>
-    </StackLayout>
+        </StackLayout>
+    </Grid>
 </ContentPage>
