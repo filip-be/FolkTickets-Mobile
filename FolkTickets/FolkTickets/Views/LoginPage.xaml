@@ -1,6 +1,28 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="FolkTickets.Views.LoginPage">
-  <ContentView.Content>
-      
-  </ContentView.Content>
-</ContentView>
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:FolkTickets"
+             x:Class="FolkTickets.Views.LoginPage"
+             xmlns:vm="clr-namespace:FolkTickets.ViewModels">
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem Text="Login" Clicked="Login_Clicked"/>
+    </ContentPage.ToolbarItems>-->
+    <ContentPage.Content>
+        <StackLayout Spacing="20" Padding="15">
+            <!--BackgroundColor="{StaticResource Key=LightBackgroundColor}"-->
+            <Label Text="Welcome to FolkTickets app!" 
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                x:Name="WelcomeLabel"/>
+            <Label Text="Webpage URI" FontSize="Medium"/>
+            <Entry x:Name="PageUri" Text="{Binding PageUriInput}" FontSize="Small"/>
+            <Label Text="WooCommerce API Key" FontSize="Medium" />
+            <Entry x:Name="ApiKey" Text="{Binding ApiKeyInput}" FontSize="Small"/>
+            <Label Text="WooCommerce API Secret" FontSize="Medium" />
+            <Entry x:Name="ApiSecret" Text="{Binding ApiSecretInput}" FontSize="Small" IsPassword="True"/>
+            <Button Text="Login"
+                x:Name="ButtonLogin"
+                Clicked="Login_Clicked"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
