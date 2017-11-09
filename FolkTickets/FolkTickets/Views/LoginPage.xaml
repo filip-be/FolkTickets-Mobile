@@ -12,16 +12,14 @@
             <!--BackgroundColor="{StaticResource Key=LightBackgroundColor}"-->
             <Label Text="Welcome to FolkTickets app!" 
                 VerticalOptions="Center" 
-                HorizontalOptions="Center"
-                x:Name="WelcomeLabel"/>
+                HorizontalOptions="Center"/>
             <Label Text="Webpage URI" FontSize="Medium"/>
-            <Entry x:Name="PageUri" Text="{Binding PageUriInput}" FontSize="Small"/>
+            <Entry Text="{Binding PageUri, Mode=TwoWay}" FontSize="Small"/>
             <Label Text="WooCommerce API Key" FontSize="Medium" />
-            <Entry x:Name="ApiKey" Text="{Binding ApiKeyInput}" FontSize="Small"/>
+            <Entry Text="{Binding ApiKey, Mode=TwoWay}" FontSize="Small"/>
             <Label Text="WooCommerce API Secret" FontSize="Medium" />
-            <Entry x:Name="ApiSecret" Text="{Binding ApiSecretInput}" FontSize="Small" IsPassword="True"/>
+            <Entry Text="{Binding ApiSecret, Mode=TwoWay}" FontSize="Small" IsPassword="True"/>
             <Button Text="Login"
-                x:Name="ButtonLogin"
                 Clicked="Login_Clicked"/>
         </StackLayout>
     </ContentPage.Content>

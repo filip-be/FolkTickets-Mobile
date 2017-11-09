@@ -24,8 +24,12 @@ namespace FolkTickets.Droid
 
 			base.OnCreate (bundle);
 
-			global::Xamarin.Forms.Forms.Init (this, bundle);
-			LoadApplication (new FolkTickets.App ());
+            Plugin.Iconize.Iconize.With(new Plugin.Iconize.Fonts.FontAwesomeModule());
+            Xamarin.Forms.Forms.Init (this, bundle);
+
+            FormsPlugin.Iconize.Droid.IconControls.Init(Resource.Id.toolbar);
+
+			LoadApplication (new App());
 		}
     }
 }

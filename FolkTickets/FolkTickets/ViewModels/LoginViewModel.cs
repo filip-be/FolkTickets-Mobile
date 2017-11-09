@@ -14,31 +14,93 @@ namespace FolkTickets.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
+        private string _PageUriInput { get; set; }
+        public string PageUri
+        {
+            get
+            {
+                return _PageUriInput;
+            }
+            set
+            {
+                if (EqualityComparer<string>.Default.Equals(_PageUriInput, value))
+                    return;
+                _PageUriInput = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _ApiKey { get; set; }
+        public string ApiKey
+        {
+            get
+            {
+                return _ApiKey;
+            }
+            set
+            {
+                if (EqualityComparer<string>.Default.Equals(_ApiKey, value))
+                    return;
+                _ApiKey = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _ApiSecret { get; set; }
+        public string ApiSecret
+        {
+            get
+            {
+                return _ApiSecret;
+            }
+            set
+            {
+                if (EqualityComparer<string>.Default.Equals(_ApiSecret, value))
+                    return;
+                _ApiSecret = value;
+                OnPropertyChanged();
+            }
+        }
         public LoginViewModel()
         {
             Title = "Login";
             
-            MessagingCenter.Subscribe<LoginPage, Account>(this, "Login", Login);
+            MessagingCenter.Subscribe<LoginPage, bool>(this, "Login", Login);
         }
 
-        public async Task<bool> Login(Account userAccount, bool displayErrors = true)
+        /// <summary>
+        /// Login to the WC
+        /// </summary>
+        /// <param name="page">View</param>
+        /// <param name="useUserInput">Use user input</param>
+        /// <param name="displayErrors">Display errors to the view</param>
+        private async void Login(LoginPage page, bool useUserInput)
         {
             if (IsBusy)
-                return false;
+                return;
 
             IsBusy = true;
+            Account userAccount = null;
 
             try
             {
                 // Get user account from app store
-                if (userAccount == null)
+                if (!useUserInput)
                 {
                     userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
                 }
+                else
+                {
+                    userAccount = new Account()
+                    {
+                        Username = PageUri
+                    };
+
+                    userAccount.Properties.Add("ApiKey", ApiKey);
+                    userAccount.Properties.Add("ApiSecret", ApiSecret);
+                };
 
                 if (userAccount == null)
                 {
-                    return false;
+                    return;
                 }
 
                 if (string.IsNullOrWhiteSpace(userAccount.Username))
@@ -59,34 +121,44 @@ namespace FolkTickets.ViewModels
 
                 // Save credentials if the connection succeeded
                 AccountStore.Create(Forms.Context).Save(userAccount, App.AppName);
-                return true;
+
+                MessagingCenter.Send(new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = "Logged succesfully",
+                    Cancel = "OK"
+                }, "Error");
+                return;
             }
             catch (Exception ex)
             {
-                if (displayErrors)
+                MessagingCenter.Send(new MessagingCenterAlert
                 {
-                    MessagingCenter.Send(new MessagingCenterAlert
-                    {
-                        Title = "Error",
-                        Message = string.Format("Unable to login: {0}", ex.Message),
-                        Cancel = "OK"
-                    }, "Error");
-                }
-                return false;
+                    Title = "Error",
+                    Message = string.Format("Unable to login: {0}", ex.Message),
+                    Cancel = "OK"
+                }, "Error");
+                return;
             }
             finally
             {
+                if (userAccount != null)
+                {
+                    PageUri = userAccount.Username;
+                    if (userAccount.Properties.ContainsKey("ApiKey"))
+                    {
+                        ApiKey = userAccount.Properties["ApiKey"];
+                    }
+                    if (userAccount.Properties.ContainsKey("ApiSecret"))
+                    {
+                        ApiSecret = userAccount.Properties["ApiSecret"];
+                    }
+                }
                 IsBusy = false;
             }
         }
 
-        private async void Login(LoginPage page, Account userAccount)
-        {
-            await Login(userAccount);
-            return;
-        }
-
-        public async Task TestWCConnectionAsync(string uri, string apiKey, string apiSecret)
+        private async Task TestWCConnectionAsync(string uri, string apiKey, string apiSecret)
         {
             RestAPI rest = new RestAPI(uri,
                     apiKey,

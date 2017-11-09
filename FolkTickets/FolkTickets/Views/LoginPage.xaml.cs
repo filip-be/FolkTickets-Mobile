@@ -18,11 +18,7 @@ namespace FolkTickets.Views
 	public partial class LoginPage : ContentPage
 	{
         private LoginViewModel ViewModel;
-
-        public string ApiKeyInput { get; set; }
-        public string ApiSecretInput { get; set; }
-        public string PageUriInput { get; set; }
-
+        
         public LoginPage()
 		{
 			InitializeComponent();
@@ -31,22 +27,18 @@ namespace FolkTickets.Views
 
             MessagingCenter.Subscribe<MessagingCenterAlert>(this, "Error", async (item) =>
             {
+                
                 await DisplayAlert(item.Title, item.Message, item.Cancel);
             });
+
+            MessagingCenter.Send(this, "Login", false);
         }
 
         private async void Login_Clicked(object sender, EventArgs e)
         {
             try
             {
-                Account acc = new Account
-                {
-                    Username = PageUri.Text
-                };
-                acc.Properties.Add("ApiKey", ApiKey.Text);
-                acc.Properties.Add("ApiSecret", ApiSecret.Text);
-
-                MessagingCenter.Send(this, "Login", acc);
+                MessagingCenter.Send(this, "Login", true);
                 await Navigation.PopToRootAsync();
             }
             catch(Exception ex)
