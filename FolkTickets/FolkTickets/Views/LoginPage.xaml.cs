@@ -27,7 +27,6 @@ namespace FolkTickets.Views
 
             MessagingCenter.Subscribe<MessagingCenterAlert>(this, "Error", async (item) =>
             {
-                
                 await DisplayAlert(item.Title, item.Message, item.Cancel);
             });
 

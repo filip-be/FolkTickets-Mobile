@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
              xmlns:local="clr-namespace:FolkTickets"
              x:Class="FolkTickets.Views.LoginPage"
              xmlns:vm="clr-namespace:FolkTickets.ViewModels">
-    <!--<ContentPage.ToolbarItems>
-        <ToolbarItem Text="Login" Clicked="Login_Clicked"/>
-    </ContentPage.ToolbarItems>-->
+    <ContentPage.ToolbarItems>
+        <iconize:IconToolbarItem Icon="fa-sign-in" IconColor="White" Text="Login" Clicked="Login_Clicked"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="20" Padding="15">
             <!--BackgroundColor="{StaticResource Key=LightBackgroundColor}"-->
