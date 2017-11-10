@@ -30,15 +30,15 @@ namespace FolkTickets.Droid
 
             Iconize.With(new Plugin.Iconize.Fonts.FontAwesomeModule());
             IconControls.Init(Resource.Id.toolbar, Resource.Id.sliding_tabs);
-            //ZXing.Net.Mobile.Forms.Android.Platform.Init();
+            ZXing.Net.Mobile.Forms.Android.Platform.Init();
 
             LoadApplication (new App());
 		}
 
-        //public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
-        //{
-        //    ZXing.Net.Mobile.Forms.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        //}
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            ZXing.Net.Mobile.Forms.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }
 

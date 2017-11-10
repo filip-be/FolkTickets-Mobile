@@ -5,13 +5,16 @@ using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using FolkTickets.Views;
 using FolkTickets.Helpers;
-//using ZXing.Net.Mobile.Forms;
+using ZXing.Net.Mobile.Forms;
+using ZXing.Mobile;
+using System.Windows.Input;
 
 namespace FolkTickets.ViewModels
 {
     public class OrdersViewModel : BaseViewModel
     {
         public ObservableCollection<string> Items { get; set; }
+        public ICommand ScanClicked { get; set; }
         public OrdersViewModel()
         {
             Items = new ObservableCollection<string>
@@ -23,10 +26,10 @@ namespace FolkTickets.ViewModels
                 "Item 5"
             };
 
-            MessagingCenter.Subscribe<OrdersPage>(this, "ScanQR", ScanQRAsync);
+            ScanClicked = new Command(ScanQR);
         }
 
-        private void ScanQRAsync(OrdersPage page)
+        private void ScanQR()
         {
             if (IsBusy)
                 return;
@@ -34,27 +37,41 @@ namespace FolkTickets.ViewModels
             IsBusy = true;
             try
             {
-                //var scanPage = new ZXingScannerPage();
+                var options = new MobileBarcodeScanningOptions
+                {
+                    AutoRotate = true,
+                    UseFrontCameraIfAvailable = false,
+                    TryHarder = true,
+                    PossibleFormats = new List<ZXing.BarcodeFormat>
+                    {
+                        ZXing.BarcodeFormat.QR_CODE
+                    }
+                };
 
-                //scanPage.OnScanResult += (result) =>
-                //{
-                //    // Stop scanning
-                //    scanPage.IsScanning = false;
+                ZXingScannerPage scanPage = new ZXingScannerPage(options)
+                {
+                    DefaultOverlayBottomText = "Scan ticket QR code"
+                };
 
-                //    MessagingCenter.Send(new MessagingCenterAlert
-                //    {
-                //        Title = "Error",
-                //        Message = string.Format("Scanned text: {0}", result.Text),
-                //        Cancel = "OK"
-                //    }, "Error");
-                //    // Pop the page and show the result
-                //    //Device.BeginInvokeOnMainThread(() => {
-                //    //    Navigation.PopAsync();
-                //    //    DisplayAlert("Scanned Barcode", result.Text, "OK");
-                //    //});
-                //};
+                scanPage.OnScanResult += (result) =>
+                {
+                    // Stop scanning
+                    scanPage.IsScanning = false;
 
-                //MessagingCenter.Send(this, "DisplayScanPage", scanPage);
+                    MessagingCenter.Send(new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = string.Format("Scanned text: {0}", result.Text),
+                        Cancel = "OK"
+                    }, "Error");
+                    // Pop the page and show the result
+                    //Device.BeginInvokeOnMainThread(() => {
+                    //    Navigation.PopAsync();
+                    //    DisplayAlert("Scanned Barcode", result.Text, "OK");
+                    //});
+                };
+
+                MessagingCenter.Send(this, "DisplayScanPage", scanPage);
             }
             catch (Exception ex)
             {

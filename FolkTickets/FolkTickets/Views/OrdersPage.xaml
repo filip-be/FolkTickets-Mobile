@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
              xmlns:local="clr-namespace:FolkTickets"
-             x:Class="FolkTickets.Views.OrdersPage">
-    <!--xmlns:vm="clr-namespace:FolkTickets.ViewModels"-->
+             x:Class="FolkTickets.Views.OrdersPage"
+             xmlns:vm="clr-namespace:FolkTickets.ViewModels">
     <ContentPage.ToolbarItems>
-        <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Clicked="ScanQR_Clicked"/>
+        <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="ScanClicked"/>
     </ContentPage.ToolbarItems>
     <ListView ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"
