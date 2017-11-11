@@ -6,7 +6,7 @@
              x:Class="FolkTickets.Views.OrdersPage"
              xmlns:vm="clr-namespace:FolkTickets.ViewModels">
     <ContentPage.ToolbarItems>
-        <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="ScanClicked"/>
+        <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="{Binding ScanClicked}"/>
     </ContentPage.ToolbarItems>
     <ListView ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"

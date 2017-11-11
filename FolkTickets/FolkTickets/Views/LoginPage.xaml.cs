@@ -25,25 +25,12 @@ namespace FolkTickets.Views
 
             BindingContext = ViewModel = new LoginViewModel();
 
-            MessagingCenter.Subscribe<MessagingCenterAlert>(this, "Error", async (item) =>
+            MessagingCenter.Subscribe<LoginViewModel, MessagingCenterAlert>(this, "Error", async (sender, item) =>
             {
                 await DisplayAlert(item.Title, item.Message, item.Cancel);
             });
 
-            MessagingCenter.Send(this, "Login", false);
-        }
-
-        private async void Login_Clicked(object sender, EventArgs e)
-        {
-            try
-            {
-                MessagingCenter.Send(this, "Login", true);
-                await Navigation.PopToRootAsync();
-            }
-            catch(Exception ex)
-            {
-                await DisplayAlert("Error", string.Format("Unable to login: {0}", ex.Message), "OK");
-            }
+            ViewModel.LoginClicked.Execute(false);
         }
     }
 }

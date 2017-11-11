@@ -6,7 +6,11 @@
              x:Class="FolkTickets.Views.LoginPage"
              xmlns:vm="clr-namespace:FolkTickets.ViewModels">
     <ContentPage.ToolbarItems>
-        <iconize:IconToolbarItem Icon="fa-sign-in" IconColor="White" Text="Login" Clicked="Login_Clicked"/>
+        <iconize:IconToolbarItem Icon="fa-sign-in" IconColor="White" Text="Login" Command="{Binding LoginClicked}">
+            <iconize:IconToolbarItem.CommandParameter>
+                <x:Boolean>True</x:Boolean>
+            </iconize:IconToolbarItem.CommandParameter>
+        </iconize:IconToolbarItem>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="20" Padding="15">
@@ -20,8 +24,6 @@
             <Entry Text="{Binding ApiKey, Mode=TwoWay}" FontSize="Small"/>
             <Label Text="WooCommerce API Secret" FontSize="Medium" />
             <Entry Text="{Binding ApiSecret, Mode=TwoWay}" FontSize="Small" IsPassword="True"/>
-            <Button Text="Login"
-                Clicked="Login_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

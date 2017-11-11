@@ -13,8 +13,8 @@ namespace FolkTickets.ViewModels
 {
     public class OrdersViewModel : BaseViewModel
     {
-        public ObservableCollection<string> Items { get; set; }
-        public ICommand ScanClicked { get; set; }
+        public ObservableCollection<string> Items { get; protected set; }
+        public ICommand ScanClicked { get; protected set; }
         public OrdersViewModel()
         {
             Items = new ObservableCollection<string>
@@ -39,13 +39,13 @@ namespace FolkTickets.ViewModels
             {
                 var options = new MobileBarcodeScanningOptions
                 {
-                    AutoRotate = true,
+                    AutoRotate = false,
                     UseFrontCameraIfAvailable = false,
-                    TryHarder = true,
-                    PossibleFormats = new List<ZXing.BarcodeFormat>
-                    {
-                        ZXing.BarcodeFormat.QR_CODE
-                    }
+                    //TryHarder = true,
+                    //PossibleFormats = new List<ZXing.BarcodeFormat>
+                    //{
+                    //    ZXing.BarcodeFormat.QR_CODE
+                    //}
                 };
 
                 ZXingScannerPage scanPage = new ZXingScannerPage(options)
@@ -56,14 +56,15 @@ namespace FolkTickets.ViewModels
                 scanPage.OnScanResult += (result) =>
                 {
                     // Stop scanning
-                    scanPage.IsScanning = false;
+                    //scanPage.IsScanning = false;
+                    scanPage.SendBackButtonPressed();
 
-                    MessagingCenter.Send(new MessagingCenterAlert
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                     {
                         Title = "Error",
                         Message = string.Format("Scanned text: {0}", result.Text),
                         Cancel = "OK"
-                    }, "Error");
+                    });
                     // Pop the page and show the result
                     //Device.BeginInvokeOnMainThread(() => {
                     //    Navigation.PopAsync();
@@ -75,12 +76,12 @@ namespace FolkTickets.ViewModels
             }
             catch (Exception ex)
             {
-                MessagingCenter.Send(new MessagingCenterAlert
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
                     Title = "Error",
                     Message = string.Format("Unable to scan QR: {0}", ex.Message),
                     Cancel = "OK"
-                }, "Error");
+                });
                 return;
             }
             finally

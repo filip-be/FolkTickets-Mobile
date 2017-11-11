@@ -22,7 +22,7 @@ namespace FolkTickets.Views
             InitializeComponent();
 
             BindingContext = ViewModel = new OrdersViewModel();
-            MessagingCenter.Subscribe<MessagingCenterAlert>(this, "Error", async (item) =>
+            MessagingCenter.Subscribe<OrdersViewModel, MessagingCenterAlert>(this, "Error", async (sender, item) =>
             {
                 await DisplayAlert(item.Title, item.Message, item.Cancel);
             });

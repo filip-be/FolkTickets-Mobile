@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using WooCommerceNET;
 using WooCommerceNET.WooCommerce.v2;
 using Xamarin.Auth;
@@ -15,6 +16,7 @@ namespace FolkTickets.ViewModels
     public class LoginViewModel : BaseViewModel
     {
         private string _PageUriInput { get; set; }
+        public ICommand LoginClicked { get; protected set; }
         public string PageUri
         {
             get
@@ -62,8 +64,8 @@ namespace FolkTickets.ViewModels
         public LoginViewModel()
         {
             Title = "Login";
-            
-            MessagingCenter.Subscribe<LoginPage, bool>(this, "Login", Login);
+
+            LoginClicked = new Command<bool>(Login);
         }
 
         /// <summary>
@@ -72,7 +74,7 @@ namespace FolkTickets.ViewModels
         /// <param name="page">View</param>
         /// <param name="useUserInput">Use user input</param>
         /// <param name="displayErrors">Display errors to the view</param>
-        private async void Login(LoginPage page, bool useUserInput)
+        private async void Login(bool useUserInput)
         {
             if (IsBusy)
                 return;
@@ -122,22 +124,22 @@ namespace FolkTickets.ViewModels
                 // Save credentials if the connection succeeded
                 AccountStore.Create(Forms.Context).Save(userAccount, App.AppName);
 
-                MessagingCenter.Send(new MessagingCenterAlert
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
                     Title = "Error",
                     Message = "Logged succesfully",
                     Cancel = "OK"
-                }, "Error");
+                });
                 return;
             }
             catch (Exception ex)
             {
-                MessagingCenter.Send(new MessagingCenterAlert
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
                     Title = "Error",
                     Message = string.Format("Unable to login: {0}", ex.Message),
                     Cancel = "OK"
-                }, "Error");
+                });
                 return;
             }
             finally
