@@ -15,8 +15,23 @@ namespace FolkTickets.ViewModels
     {
         public ObservableCollection<string> Items { get; protected set; }
         public ICommand ScanClicked { get; protected set; }
-        public OrdersViewModel()
+        public ICommand SearchCommand { get; protected set; }
+        private string _SearchText = string.Empty;
+        public string SearchText
         {
+            get
+            {
+                return _SearchText;
+            }
+            set
+            {
+                SetProperty(ref _SearchText, value);
+            }
+        }
+        public OrdersViewModel() : base()
+        {
+            Title = "Orders";
+
             Items = new ObservableCollection<string>
             {
                 "Item 1",
@@ -27,6 +42,7 @@ namespace FolkTickets.ViewModels
             };
 
             ScanClicked = new Command(ScanQR);
+            SearchCommand = new Command(FindOrder);
         }
 
         private void ScanQR()
@@ -41,35 +57,17 @@ namespace FolkTickets.ViewModels
                 {
                     AutoRotate = false,
                     UseFrontCameraIfAvailable = false,
-                    //TryHarder = true,
-                    //PossibleFormats = new List<ZXing.BarcodeFormat>
-                    //{
-                    //    ZXing.BarcodeFormat.QR_CODE
-                    //}
                 };
 
                 ZXingScannerPage scanPage = new ZXingScannerPage(options)
                 {
                     DefaultOverlayBottomText = "Scan ticket QR code"
                 };
-
+                
                 scanPage.OnScanResult += (result) =>
                 {
-                    // Stop scanning
-                    //scanPage.IsScanning = false;
-                    scanPage.SendBackButtonPressed();
-
-                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
-                    {
-                        Title = "Error",
-                        Message = string.Format("Scanned text: {0}", result.Text),
-                        Cancel = "OK"
-                    });
-                    // Pop the page and show the result
-                    //Device.BeginInvokeOnMainThread(() => {
-                    //    Navigation.PopAsync();
-                    //    DisplayAlert("Scanned Barcode", result.Text, "OK");
-                    //});
+                    SearchText = result?.Text;
+                    MessagingCenter.Send(this, "ScanCompleted", result); ;
                 };
 
                 MessagingCenter.Send(this, "DisplayScanPage", scanPage);
@@ -83,6 +81,36 @@ namespace FolkTickets.ViewModels
                     Cancel = "OK"
                 });
                 return;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private void FindOrder()
+        {
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
+            try
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = string.Format("Order to search: {0}", SearchText),
+                    Cancel = "OK"
+                });
+            }
+            catch(Exception ex)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = string.Format("Something went wrong: {0}", ex.Message),
+                    Cancel = "OK"
+                });
             }
             finally
             {

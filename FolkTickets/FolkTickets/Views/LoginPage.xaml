@@ -4,7 +4,8 @@
              xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
              xmlns:local="clr-namespace:FolkTickets"
              x:Class="FolkTickets.Views.LoginPage"
-             xmlns:vm="clr-namespace:FolkTickets.ViewModels">
+             xmlns:vm="clr-namespace:FolkTickets.ViewModels"
+             Title="Login">
     <ContentPage.ToolbarItems>
         <iconize:IconToolbarItem Icon="fa-sign-in" IconColor="White" Text="Login" Command="{Binding LoginClicked}">
             <iconize:IconToolbarItem.CommandParameter>
@@ -13,17 +14,19 @@
         </iconize:IconToolbarItem>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout Spacing="20" Padding="15">
-            <!--BackgroundColor="{StaticResource Key=LightBackgroundColor}"-->
-            <Label Text="Welcome to FolkTickets app!" 
+        <ScrollView>
+            <StackLayout Spacing="20" Padding="15">
+                <!--BackgroundColor="{StaticResource Key=LightBackgroundColor}"-->
+                <Label Text="Welcome to FolkTickets app!" 
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"/>
-            <Label Text="Webpage URI" FontSize="Medium"/>
-            <Entry Text="{Binding PageUri, Mode=TwoWay}" FontSize="Small"/>
-            <Label Text="WooCommerce API Key" FontSize="Medium" />
-            <Entry Text="{Binding ApiKey, Mode=TwoWay}" FontSize="Small"/>
-            <Label Text="WooCommerce API Secret" FontSize="Medium" />
-            <Entry Text="{Binding ApiSecret, Mode=TwoWay}" FontSize="Small" IsPassword="True"/>
-        </StackLayout>
+                <Label Text="Webpage URI" FontSize="Medium"/>
+                <Entry Text="{Binding PageUri, Mode=TwoWay}" FontSize="Small"/>
+                <Label Text="WooCommerce API Key" FontSize="Medium" />
+                <Entry Text="{Binding ApiKey, Mode=TwoWay}" FontSize="Small"/>
+                <Label Text="WooCommerce API Secret" FontSize="Medium" />
+                <Entry Text="{Binding ApiSecret, Mode=TwoWay}" FontSize="Small" IsPassword="True"/>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

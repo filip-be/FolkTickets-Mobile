@@ -9,6 +9,7 @@ using Xamarin.Forms.Xaml;
 using FolkTickets.ViewModels;
 using FolkTickets.Helpers;
 using ZXing.Net.Mobile.Forms;
+using System.Windows.Input;
 
 namespace FolkTickets.Views
 {
@@ -22,13 +23,26 @@ namespace FolkTickets.Views
             InitializeComponent();
 
             BindingContext = ViewModel = new OrdersViewModel();
+
             MessagingCenter.Subscribe<OrdersViewModel, MessagingCenterAlert>(this, "Error", async (sender, item) =>
             {
                 await DisplayAlert(item.Title, item.Message, item.Cancel);
             });
+
             MessagingCenter.Subscribe<OrdersViewModel, ZXingScannerPage>(this, "DisplayScanPage", async (view, scanPage) =>
             {
-                await Navigation.PushAsync(scanPage);
+                await Navigation.PushModalAsync(scanPage);
+            });
+
+            MessagingCenter.Subscribe<OrdersViewModel, ZXing.Result>(this, "ScanCompleted", async (view, result) =>
+            {
+                //Device.BeginInvokeOnMainThread(async () =>
+                //{
+                //    await DisplayAlert("Scanned Barcode", result.Text, "OK");
+                    
+                //});
+                await Navigation.PopModalAsync();
+                Device.BeginInvokeOnMainThread(() => ViewModel.SearchCommand.Execute(null));
             });
         }
 

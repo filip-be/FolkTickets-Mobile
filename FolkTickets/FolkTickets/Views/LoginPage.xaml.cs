@@ -19,7 +19,7 @@ namespace FolkTickets.Views
 	{
         private LoginViewModel ViewModel;
         
-        public LoginPage()
+        public LoginPage(bool tryToLogin = true)
 		{
 			InitializeComponent();
 
@@ -30,7 +30,10 @@ namespace FolkTickets.Views
                 await DisplayAlert(item.Title, item.Message, item.Cancel);
             });
 
-            ViewModel.LoginClicked.Execute(false);
+            if (tryToLogin)
+            {
+                ViewModel.LoginClicked.Execute(false);
+            }
         }
     }
 }

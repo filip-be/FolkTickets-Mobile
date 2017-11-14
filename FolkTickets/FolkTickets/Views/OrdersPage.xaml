@@ -4,35 +4,42 @@
              xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
              xmlns:local="clr-namespace:FolkTickets"
              x:Class="FolkTickets.Views.OrdersPage"
-             xmlns:vm="clr-namespace:FolkTickets.ViewModels">
+             xmlns:vm="clr-namespace:FolkTickets.ViewModels"
+             Title="Orders">
     <ContentPage.ToolbarItems>
         <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="{Binding ScanClicked}"/>
+        <iconize:IconToolbarItem Icon="fa-sign-out" IconColor="White" Command="{Binding SignOutCommand}"/>
     </ContentPage.ToolbarItems>
-    <ListView ItemsSource="{Binding Items}"
-            ItemTapped="Handle_ItemTapped"
-            CachingStrategy="RecycleElement">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <SearchBar Placeholder="Search order" Text="{Binding SearchText, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}"/>
+                <ListView ItemsSource="{Binding Items}"
+                ItemTapped="Handle_ItemTapped"
+                CachingStrategy="RecycleElement">
 
-        <!--Built in Cells-->
-        <ListView.ItemTemplate>
-            <DataTemplate>
-                <TextCell />
-            </DataTemplate>
-        </ListView.ItemTemplate>
+                    <!--Built in Cells-->
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
 
-        <!--Custom View Cells-->
-        <!--
-        <ListView.ItemTemplate>
-          <DataTemplate>
-            <ViewCell>
-              <StackLayout>
-                <Label Text="{Binding Text}" 
-                       Style="{DynamicResource ListItemTextStyle}" />
-                <Label Text="{Binding Detail}" 
-                       Style="{DynamicResource ListItemDetailTextStyle}"/>
-              </StackLayout>
-            </ViewCell>
-          </DataTemplate>
-        </ListView.ItemTemplate>
-        -->
-    </ListView>
+                    <!--Custom View Cells-->
+                    <!--<ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout>
+                                    <Label Text="{Binding Text}" 
+                               Style="{DynamicResource ListItemTextStyle}" />
+                                    <Label Text="{Binding Detail}" 
+                               Style="{DynamicResource ListItemDetailTextStyle}"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>-->
+                </ListView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
 </ContentPage>

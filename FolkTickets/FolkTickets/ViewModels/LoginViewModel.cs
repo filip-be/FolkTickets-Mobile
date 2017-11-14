@@ -1,5 +1,6 @@
 ﻿using FolkTickets.Helpers;
 using FolkTickets.Views;
+using FormsPlugin.Iconize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace FolkTickets.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
-        private string _PageUriInput { get; set; }
+        private string _PageUriInput = string.Empty;
         public ICommand LoginClicked { get; protected set; }
         public string PageUri
         {
@@ -25,13 +26,10 @@ namespace FolkTickets.ViewModels
             }
             set
             {
-                if (EqualityComparer<string>.Default.Equals(_PageUriInput, value))
-                    return;
-                _PageUriInput = value;
-                OnPropertyChanged();
+                SetProperty(ref _PageUriInput, value);
             }
         }
-        private string _ApiKey { get; set; }
+        private string _ApiKey = string.Empty;
         public string ApiKey
         {
             get
@@ -40,13 +38,10 @@ namespace FolkTickets.ViewModels
             }
             set
             {
-                if (EqualityComparer<string>.Default.Equals(_ApiKey, value))
-                    return;
-                _ApiKey = value;
-                OnPropertyChanged();
+                SetProperty(ref _ApiKey, value);
             }
         }
-        private string _ApiSecret { get; set; }
+        private string _ApiSecret = string.Empty;
         public string ApiSecret
         {
             get
@@ -55,17 +50,28 @@ namespace FolkTickets.ViewModels
             }
             set
             {
-                if (EqualityComparer<string>.Default.Equals(_ApiSecret, value))
-                    return;
-                _ApiSecret = value;
-                OnPropertyChanged();
+                SetProperty(ref _ApiSecret, value);
             }
         }
-        public LoginViewModel()
+        public LoginViewModel() : base()
         {
             Title = "Login";
 
             LoginClicked = new Command<bool>(Login);
+
+            Account userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
+            if(userAccount != null)
+            {
+                PageUri = userAccount.Username;
+                if (userAccount.Properties.ContainsKey("ApiKey"))
+                {
+                    ApiKey = userAccount.Properties["ApiKey"];
+                }
+                if (userAccount.Properties.ContainsKey("ApiSecret"))
+                {
+                    ApiSecret = userAccount.Properties["ApiSecret"];
+                }
+            }
         }
 
         /// <summary>
@@ -124,12 +130,22 @@ namespace FolkTickets.ViewModels
                 // Save credentials if the connection succeeded
                 AccountStore.Create(Forms.Context).Save(userAccount, App.AppName);
 
-                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                if(!(App.Current.MainPage is IconNavigationPage)
+                    || !((App.Current.MainPage as IconNavigationPage)?.CurrentPage is IconTabbedPage))
                 {
-                    Title = "Error",
-                    Message = "Logged succesfully",
-                    Cancel = "OK"
-                });
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = "Logged succesfully, but there are invalid application pages. Cannot proceed!",
+                        Cancel = "OK"
+                    });
+                }
+
+                IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
+
+                tabbedPage.Children.Clear();
+                tabbedPage.Children.Add(new OrdersPage());
+                
                 return;
             }
             catch (Exception ex)

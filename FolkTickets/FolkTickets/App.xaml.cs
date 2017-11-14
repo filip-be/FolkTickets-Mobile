@@ -27,11 +27,6 @@ namespace FolkTickets
                         Title = "Login",
                         Icon = "fa-sign-in"
                     },
-                    new OrdersPage()
-                    {
-                        Title = "Orders",
-                        Icon = "fa-tasks"
-                    }
                 }
             };
 
