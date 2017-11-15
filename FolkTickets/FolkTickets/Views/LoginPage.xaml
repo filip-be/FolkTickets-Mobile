@@ -18,14 +18,18 @@
             <StackLayout Spacing="20" Padding="15">
                 <!--BackgroundColor="{StaticResource Key=LightBackgroundColor}"-->
                 <Label Text="Welcome to FolkTickets app!" 
-                VerticalOptions="Center" 
-                HorizontalOptions="Center"/>
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center"/>
                 <Label Text="Webpage URI" FontSize="Medium"/>
                 <Entry Text="{Binding PageUri, Mode=TwoWay}" FontSize="Small"/>
                 <Label Text="WooCommerce API Key" FontSize="Medium" />
                 <Entry Text="{Binding ApiKey, Mode=TwoWay}" FontSize="Small"/>
                 <Label Text="WooCommerce API Secret" FontSize="Medium" />
                 <Entry Text="{Binding ApiSecret, Mode=TwoWay}" FontSize="Small" IsPassword="True"/>
+                <Label Text="WooCommerce default language" FontSize="Medium" />
+                <Picker ItemsSource="{Binding Languages}" 
+                        ItemDisplayBinding="{Binding DisplayName}" 
+                        SelectedItem="{Binding Language, Mode=TwoWay}"/>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

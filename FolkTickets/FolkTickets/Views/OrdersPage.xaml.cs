@@ -36,11 +36,6 @@ namespace FolkTickets.Views
 
             MessagingCenter.Subscribe<OrdersViewModel, ZXing.Result>(this, "ScanCompleted", async (view, result) =>
             {
-                //Device.BeginInvokeOnMainThread(async () =>
-                //{
-                //    await DisplayAlert("Scanned Barcode", result.Text, "OK");
-                    
-                //});
                 await Navigation.PopModalAsync();
                 Device.BeginInvokeOnMainThread(() => ViewModel.SearchCommand.Execute(null));
             });

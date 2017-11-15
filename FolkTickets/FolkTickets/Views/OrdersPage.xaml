@@ -15,29 +15,20 @@
             <StackLayout>
                 <SearchBar Placeholder="Search order" Text="{Binding SearchText, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}"/>
                 <ListView ItemsSource="{Binding Items}"
-                ItemTapped="Handle_ItemTapped"
-                CachingStrategy="RecycleElement">
-
+                    ItemTapped="Handle_ItemTapped"
+                          ItemTemplate=""
+                    CachingStrategy="RecycleElement">
                     <!--Built in Cells-->
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextCell />
+                            <TextCell Text="{Binding OrderId}" Detail="{Binding Status}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-
-                    <!--Custom View Cells-->
-                    <!--<ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout>
-                                    <Label Text="{Binding Text}" 
-                               Style="{DynamicResource ListItemTextStyle}" />
-                                    <Label Text="{Binding Detail}" 
-                               Style="{DynamicResource ListItemDetailTextStyle}"/>
-                                </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>-->
+                    <ListView.Footer>
+                        <StackLayout>
+                            <Button x:Name="LoadAllButton" IsVisible="True" Text="Load all orders" Command="{Binding LoadAllOrdersCommand}" />
+                        </StackLayout>
+                    </ListView.Footer>
                 </ListView>
             </StackLayout>
         </ScrollView>

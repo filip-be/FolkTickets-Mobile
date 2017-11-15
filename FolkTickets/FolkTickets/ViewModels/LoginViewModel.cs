@@ -1,8 +1,10 @@
 ﻿using FolkTickets.Helpers;
+using FolkTickets.Services;
 using FolkTickets.Views;
 using FormsPlugin.Iconize;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,11 +55,30 @@ namespace FolkTickets.ViewModels
                 SetProperty(ref _ApiSecret, value);
             }
         }
+        private CultureInfo _Language;
+        public CultureInfo Language
+        {
+            get
+            {
+                return _Language;
+            }
+            set
+            {
+                SetProperty(ref _Language, value);
+            }
+        }
+        public ICollection<CultureInfo> Languages { get; private set; }
         public LoginViewModel() : base()
         {
             Title = "Login";
 
             LoginClicked = new Command<bool>(Login);
+
+            Languages = CultureInfo
+                    .GetCultures(CultureTypes.AllCultures & ~CultureTypes.NeutralCultures)
+                    .OrderBy(c => c.DisplayName)
+                    .ToArray();
+            string currentLang = null;
 
             Account userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
             if(userAccount != null)
@@ -71,6 +92,19 @@ namespace FolkTickets.ViewModels
                 {
                     ApiSecret = userAccount.Properties["ApiSecret"];
                 }
+                if (userAccount.Properties.ContainsKey("Lang"))
+                {
+                    currentLang = userAccount.Properties["Lang"];
+                }
+            }
+
+            if (!string.IsNullOrEmpty(currentLang))
+            {
+                Language = Languages.Where(c => c.Name == currentLang).FirstOrDefault();
+            }
+            if (Language == null)
+            {
+                Language = CultureInfo.CurrentCulture;
             }
         }
 
@@ -91,19 +125,40 @@ namespace FolkTickets.ViewModels
             try
             {
                 // Get user account from app store
-                if (!useUserInput)
+                userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
+                if (useUserInput)
                 {
-                    userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
-                }
-                else
-                {
-                    userAccount = new Account()
+                    if (userAccount == null)
                     {
-                        Username = PageUri
-                    };
+                        userAccount = new Account();
+                    }
 
-                    userAccount.Properties.Add("ApiKey", ApiKey);
-                    userAccount.Properties.Add("ApiSecret", ApiSecret);
+                    userAccount.Username = PageUri;
+
+                    if (userAccount.Properties.ContainsKey("ApiKey"))
+                    {
+                        userAccount.Properties["ApiKey"] = ApiKey;
+                    }
+                    else
+                    {
+                        userAccount.Properties.Add("ApiKey", ApiKey);
+                    }
+                    if (userAccount.Properties.ContainsKey("ApiSecret"))
+                    {
+                        userAccount.Properties["ApiSecret"] = ApiSecret;
+                    }
+                    else
+                    {
+                        userAccount.Properties.Add("ApiSecret", ApiSecret);
+                    }
+                    if (userAccount.Properties.ContainsKey("Lang"))
+                    {
+                        userAccount.Properties["Lang"] = Language?.Name;
+                    }
+                    else
+                    {
+                        userAccount.Properties.Add("Lang", Language?.Name);
+                    }
                 };
 
                 if (userAccount == null)
@@ -111,21 +166,7 @@ namespace FolkTickets.ViewModels
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(userAccount.Username))
-                {
-                    throw new ArgumentException("Page URI cannot be empty");
-                }
-                if (!userAccount.Properties.ContainsKey("ApiKey") || string.IsNullOrWhiteSpace(userAccount.Properties["ApiKey"]))
-                {
-                    throw new ArgumentException("API Key cannot be empty");
-                }
-                if (!userAccount.Properties.ContainsKey("ApiSecret") || string.IsNullOrWhiteSpace(userAccount.Properties["ApiSecret"]))
-                {
-                    throw new ArgumentException("API Secret cannot be empty");
-                }
-
-                // Test connection
-                await TestWCConnectionAsync(userAccount.Username, userAccount.Properties["ApiKey"], userAccount.Properties["ApiSecret"]);
+                await WCService.TestCredentialsAsync(true, userAccount);
 
                 // Save credentials if the connection succeeded
                 AccountStore.Create(Forms.Context).Save(userAccount, App.AppName);
@@ -139,6 +180,7 @@ namespace FolkTickets.ViewModels
                         Message = "Logged succesfully, but there are invalid application pages. Cannot proceed!",
                         Cancel = "OK"
                     });
+                    return;
                 }
 
                 IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
@@ -174,32 +216,6 @@ namespace FolkTickets.ViewModels
                 }
                 IsBusy = false;
             }
-        }
-
-        private async Task TestWCConnectionAsync(string uri, string apiKey, string apiSecret)
-        {
-            RestAPI rest = new RestAPI(uri,
-                    apiKey,
-                    apiSecret,
-                    true,
-                    null,
-                    null,
-                    null,
-                    null,
-                    new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Accept-Language", "pl_PL") });
-            if(rest == null)
-            {
-                throw new Exception("Could initialize RestAPI object");
-            }
-
-            WCObject wcObj = new WCObject(rest);
-            if(wcObj == null)
-            {
-                throw new Exception("Could not initialize WC object");
-            }
-
-            await wcObj.SystemStatus.GetAll();
-            return;
         }
     }
 }
