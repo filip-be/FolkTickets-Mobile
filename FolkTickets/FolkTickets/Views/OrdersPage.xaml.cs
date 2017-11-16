@@ -10,6 +10,7 @@ using FolkTickets.ViewModels;
 using FolkTickets.Helpers;
 using ZXing.Net.Mobile.Forms;
 using System.Windows.Input;
+using FolkTickets.Models;
 
 namespace FolkTickets.Views
 {
@@ -41,12 +42,15 @@ namespace FolkTickets.Views
             });
         }
 
-        async void Handle_ItemTapped(object sender, SelectedItemChangedEventArgs e)
+        private async void Handle_ItemTapped(object sender, SelectedItemChangedEventArgs e)
         {
             if (e.SelectedItem == null)
                 return;
 
-            await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
+            if(e.SelectedItem is MobileOrder)
+            {
+                await ViewModel.DisplayBalFolkOrder(((MobileOrder)e.SelectedItem).OrderId?.ToString());
+            }
 
             //Deselect Item
             ((ListView)sender).SelectedItem = null;

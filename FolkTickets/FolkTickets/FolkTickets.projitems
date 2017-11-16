@@ -14,10 +14,16 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MessagingCenterAlert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObservableObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\MobileOrder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\WCService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BalFolkOrderViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\OrdersViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\BalFolkOrderPage.xaml.cs">
+      <DependentUpon>BalFolkOrderPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -37,10 +43,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Models\" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\OrdersPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\OrdersPage.xaml">
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\BalFolkOrderPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

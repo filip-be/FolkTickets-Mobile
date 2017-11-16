@@ -74,6 +74,7 @@ namespace FolkTickets.ViewModels
 
             LoginClicked = new Command<bool>(Login);
 
+            IsBusy = true;
             Languages = CultureInfo
                     .GetCultures(CultureTypes.AllCultures & ~CultureTypes.NeutralCultures)
                     .OrderBy(c => c.DisplayName)
@@ -106,6 +107,7 @@ namespace FolkTickets.ViewModels
             {
                 Language = CultureInfo.CurrentCulture;
             }
+            IsBusy = false;
         }
 
         /// <summary>
@@ -118,7 +120,7 @@ namespace FolkTickets.ViewModels
         {
             if (IsBusy)
                 return;
-
+            
             IsBusy = true;
             Account userAccount = null;
 

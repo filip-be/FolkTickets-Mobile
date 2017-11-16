@@ -41,7 +41,13 @@ namespace FolkTickets.ViewModels
         public bool IsBusy
         {
             get { return isBusy; }
-            set { SetProperty(ref isBusy, value); }
+            set { IsControlsVisible = !value; SetProperty(ref isBusy, value); }
+        }
+        bool isControlsVisible = true;
+        public bool IsControlsVisible
+        {
+            get { return isControlsVisible; }
+            set { SetProperty(ref isControlsVisible, value); }
         }
         /// <summary>
         /// Private backing field to hold the title

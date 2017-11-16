@@ -8,8 +8,10 @@ using FolkTickets.Helpers;
 using ZXing.Net.Mobile.Forms;
 using ZXing.Mobile;
 using System.Windows.Input;
-using WooCommerceNET.WooCommerce.v2;
 using FolkTickets.Services;
+using FolkTickets.Models;
+using FormsPlugin.Iconize;
+using System.Threading.Tasks;
 
 namespace FolkTickets.ViewModels
 {
@@ -21,7 +23,7 @@ namespace FolkTickets.ViewModels
         /// <summary>
         /// List of itmes
         /// </summary>
-        public ObservableCollection<BFTOrder> Items { get; protected set; }
+        public ObservableCollection<MobileOrder> Items { get; protected set; }
         /// <summary>
         /// QR scan button clicked command
         /// </summary>
@@ -59,7 +61,7 @@ namespace FolkTickets.ViewModels
         {
             Title = "Orders";
 
-            Items = new ObservableCollection<BFTOrder>();
+            Items = new ObservableCollection<MobileOrder>();
 
             ScanClicked = new Command(ScanQR);
             SearchCommand = new Command(FindOrder);
@@ -71,9 +73,13 @@ namespace FolkTickets.ViewModels
         /// </summary>
         private async void LoadAllOrders()
         {
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
             try
             {
-                IEnumerable<BFTOrder> orders = await WCService.GetAllWCOrders();
+                IEnumerable<MobileOrder> orders = await WCService.GetAllWCOrders();
                 Items.Clear();
                 foreach (var order in orders)
                 {
@@ -88,6 +94,10 @@ namespace FolkTickets.ViewModels
                     Message = string.Format("Unable to get WC orders: {0}", ex.Message),
                     Cancel = "OK"
                 });
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
@@ -112,7 +122,7 @@ namespace FolkTickets.ViewModels
                 {
                     DefaultOverlayBottomText = "Scan ticket QR code"
                 };
-                
+
                 scanPage.OnScanResult += (result) =>
                 {
                     SearchText = result?.Text;
@@ -140,7 +150,7 @@ namespace FolkTickets.ViewModels
         /// <summary>
         /// Find specific order
         /// </summary>
-        private void FindOrder()
+        private async void FindOrder()
         {
             if (IsBusy)
                 return;
@@ -148,6 +158,7 @@ namespace FolkTickets.ViewModels
             IsBusy = true;
             try
             {
+                await DisplayBalFolkOrder(SearchText);
                 MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
                     Title = "Error",
@@ -155,12 +166,53 @@ namespace FolkTickets.ViewModels
                     Cancel = "OK"
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
                     Title = "Error",
                     Message = string.Format("Something went wrong: {0}", ex.Message),
+                    Cancel = "OK"
+                });
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        public async Task DisplayBalFolkOrder(string key)
+        {
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
+            try
+            {
+                if (!(App.Current.MainPage is IconNavigationPage)
+                        || !((App.Current.MainPage as IconNavigationPage)?.CurrentPage is IconTabbedPage))
+                {
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = "Logged succesfully, but there are invalid application pages. Cannot proceed!",
+                        Cancel = "OK"
+                    });
+                    return;
+                }
+                IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
+
+                BalFolkOrderViewModel model = new BalFolkOrderViewModel();
+                await model.Initialize(key);
+
+                tabbedPage.Children.Add(new BalFolkOrderPage(model));
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = string.Format("Could not load Bal Folk order: {0}", ex.Message),
                     Cancel = "OK"
                 });
             }

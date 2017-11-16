@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FolkTickets.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -99,19 +100,39 @@ namespace FolkTickets.Services
         /// <summary>
         /// Get all WooCommerce orders
         /// </summary>
-        public static async Task<IEnumerable<BFTOrder>> GetAllWCOrders()
+        public static async Task<IEnumerable<MobileOrder>> GetAllWCOrders()
         {
             try
             {
                 WCObject api = GetWCApiObject(null);
                 List<Order> orders = await api.Order.GetAll();
-                return orders.Select(o => new BFTOrder() { OrderId = o.id, Status = o.status });
+                return orders.Select(o => new MobileOrder() { OrderId = o.id, Status = o.status });
             }
             catch (Exception ex)
             {
                 throw new Exception(string.Format("Could not get all WC orders: {0}", ex.Message), ex);
             }
-            return null;
+        }
+
+        /// <summary>
+        /// Get BFT orders with tickets
+        /// </summary>
+        /// <param name="key">Order ID / Order Key / Ticket hash</param>
+        public static async Task<MobileOrder> GetBFTOrder(string key)
+        {
+            try
+            {
+                WCObject api = GetWCApiObject(null);
+                BFTOrder bftOrder = await api.BFTOrder.Get(key);
+                MobileOrder order = new MobileOrder(bftOrder);
+                order.WCOrder = await api.Order.Get(order.OrderId.ToString());
+
+                return order;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
