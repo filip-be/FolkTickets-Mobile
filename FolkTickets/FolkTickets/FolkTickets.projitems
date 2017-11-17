@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MessagingCenterAlert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObservableObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MobileOrder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\MobileTicket.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\WCService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BalFolkOrderViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />

@@ -122,10 +122,64 @@ namespace FolkTickets.Services
         {
             try
             {
+                IList<BFTTicket> tickets = new List<BFTTicket>();
+                IList<BFTEvent> events = new List<BFTEvent>();
+                IList<Product> products = new List<Product>();
+
                 WCObject api = GetWCApiObject(null);
                 BFTOrder bftOrder = await api.BFTOrder.Get(key);
-                MobileOrder order = new MobileOrder(bftOrder);
-                order.WCOrder = await api.Order.Get(order.OrderId.ToString());
+                MobileOrder order = new MobileOrder();
+                order.OrderId = bftOrder.OrderId;
+                order.OrderKey = key;
+                order.Status = bftOrder.Status;
+                order.Type = bftOrder.Type;
+
+                Order wcOrder = await api.Order.Get(order.OrderId.ToString());
+                order.CustomerFirstName = wcOrder.billing.first_name;
+                order.CustomerLastName = wcOrder.billing.last_name;
+                order.CustomerMail = wcOrder.billing.email;
+                order.CustomerPhone = wcOrder.billing.phone;
+                order.CustomerNote = wcOrder.customer_note;
+
+                order.Tickets = new List<MobileTicket>();
+                foreach(var ticket in bftOrder.Tickets)
+                {
+                    MobileTicket mTicket = new MobileTicket();
+
+                    mTicket.ID = ticket.ID;
+                    mTicket.TicketID = ticket.TicketID;
+                    mTicket.OrderID = ticket.OrderID;
+                    mTicket.OrderItemID = ticket.OrderItemID;
+                    mTicket.Hash = ticket.Hash;
+                    mTicket.Timestamp = ticket.Timestamp;
+                    mTicket.Status = ticket.Status;
+
+                    BFTTicket bftTicket = tickets.Where(t => t.Id == mTicket.TicketID).FirstOrDefault();
+                    if(bftTicket == null)
+                    {
+                        bftTicket = await api.BFTTicket.Get((int)mTicket.TicketID);
+                    }
+
+                    mTicket.ProductID = bftTicket.ProductID;
+                    mTicket.EventID = bftTicket.EventID;
+
+                    BFTEvent bftEvent = events.Where(e => e.Id == mTicket.EventID).FirstOrDefault();
+                    if (bftEvent == null)
+                    {
+                        bftEvent = await api.BFTEvent.Get((int)mTicket.EventID);
+                    }
+                    mTicket.EventName = bftEvent.Name;
+
+                    Product product = products.Where(p => p.id == mTicket.ProductID).FirstOrDefault();
+                    if (product == null)
+                    {
+                        product = await api.Product.Get((int)mTicket.ProductID);
+                    }
+                    mTicket.ProductName = product.name;
+                    mTicket.ProductShortDescription = product.short_description;
+
+                    order.Tickets.Add(mTicket);
+                }
 
                 return order;
             }
