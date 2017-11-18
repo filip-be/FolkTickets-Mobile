@@ -13,9 +13,10 @@
     <ContentPage.Content>
         <Grid>
             <ScrollView IsVisible="{Binding IsControlsVisible}">
-                <StackLayout>
-                    <Label Text="ID"/>
-                    <Entry IsEnabled="False" Text="{Binding Order.OrderId}" />
+                <StackLayout Spacing="20" Padding="15">
+                    <Label Text="Order key" FontSize="Medium"/>
+                    <Entry IsEnabled="False" Text="{Binding Order.OrderKey}" FontSize="Medium"/>
+                    <Label Text="{Binding Order.CustomerFirstName}" />
                     <!--<ListView ItemsSource="{Binding Items}" x:Name="ItemsListView"
                         CachingStrategy="RecycleElement">
                         --><!--Built in Cells--><!--

@@ -158,6 +158,10 @@
       <Project>{63dda1fe-3011-4700-a0f4-78e2358b330f}</Project>
       <Name>WooCommerceNET</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Xamarin.Forms.Proxy\Xamarin.Forms.Proxy.csproj">
+      <Project>{f3d6a064-d3f7-4125-9279-0c7ad728b7c9}</Project>
+      <Name>Xamarin.Forms.Proxy</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamarin.auth">

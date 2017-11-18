@@ -106,7 +106,17 @@ namespace FolkTickets.Services
             {
                 WCObject api = GetWCApiObject(null);
                 List<Order> orders = await api.Order.GetAll();
-                return orders.Select(o => new MobileOrder() { OrderId = o.id, Status = o.status });
+                return orders.Select(o => new MobileOrder()
+                {
+                    OrderId = o.id,
+                    Status = o.status,
+                    CustomerFirstName = o.billing.first_name,
+                    CustomerLastName = o.billing.last_name,
+                    CustomerMail = o.billing.email,
+                    CustomerPhone = o.billing.phone,
+                    OrderKey = o.order_key,
+                    CustomerNote = o.customer_note
+                });
             }
             catch (Exception ex)
             {

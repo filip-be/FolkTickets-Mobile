@@ -199,8 +199,9 @@ namespace FolkTickets.ViewModels
                 BalFolkOrderViewModel model = new BalFolkOrderViewModel();
                 await model.Initialize(key);
 
-                tabbedPage.Children.Add(new BalFolkOrderPage(model));
-                
+                var newPage = new BalFolkOrderPage(model);
+                tabbedPage.Children.Add(newPage);
+                tabbedPage.SelectedItem = newPage;
             }
             catch (Exception ex)
             {
