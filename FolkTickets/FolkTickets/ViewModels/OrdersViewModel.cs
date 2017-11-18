@@ -159,12 +159,6 @@ namespace FolkTickets.ViewModels
             try
             {
                 await DisplayBalFolkOrder(SearchText);
-                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
-                {
-                    Title = "Error",
-                    Message = string.Format("Order to search: {0}", SearchText),
-                    Cancel = "OK"
-                });
             }
             catch (Exception ex)
             {
@@ -206,6 +200,7 @@ namespace FolkTickets.ViewModels
                 await model.Initialize(key);
 
                 tabbedPage.Children.Add(new BalFolkOrderPage(model));
+                
             }
             catch (Exception ex)
             {
