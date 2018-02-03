@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FolkTickets.Views.BalFolkOrderPage"
              xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
+             xmlns:xfProxy="clr-namespace:Xamarin.Forms.Proxy;assembly=Xamarin.Forms.Core.UnitTests"
              xmlns:local="clr-namespace:FolkTickets"
+             xmlns:helper="clr-namespace:FolkTickets.Helpers"
              xmlns:vm="clr-namespace:FolkTickets.ViewModels"
              Title="Order">
     <ContentPage.ToolbarItems>
@@ -14,23 +16,38 @@
         <Grid>
             <ScrollView IsVisible="{Binding IsControlsVisible}">
                 <StackLayout Spacing="20" Padding="15">
-                    <Label Text="Order key" FontSize="Medium"/>
-                    <Entry IsEnabled="False" Text="{Binding Order.OrderKey}" FontSize="Medium"/>
-                    <Label Text="{Binding Order.CustomerFirstName}" />
-                    <!--<ListView ItemsSource="{Binding Items}" x:Name="ItemsListView"
+                    <Label FontSize="Medium">
+                        <Label.Text>
+                            <xfProxy:MultiBinding StringFormat="Customer: {0} {1}">
+                                <Binding Path="Order.CustomerFirstName"/>
+                                <Binding Path="Order.CustomerLastName"/>
+                            </xfProxy:MultiBinding>
+                        </Label.Text>
+                    </Label>
+                    <Label FontSize="Medium">
+                        <Label.Text>
+                            <xfProxy:MultiBinding StringFormat="Status: {0}">
+                                <Binding Path="Order.Status"/>
+                            </xfProxy:MultiBinding>
+                        </Label.Text>
+                    </Label>
+                    <ListView 
+                        ItemsSource="{Binding Order.Tickets}" 
+                        x:Name="ItemsListView"
+                        ItemTapped="TicketTapped"  
                         CachingStrategy="RecycleElement">
-                        --><!--Built in Cells--><!--
+                        <!--Built in Cells-->
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextCell Text="{Binding OrderId}" Detail="{Binding Status}"/>
+                                <ViewCell>
+                                    <Grid BackgroundColor="{Binding StatusColor}">
+                                        <iconize:IconLabel Grid.Column="1" Text="fa-times"/>
+                                        <Label Grid.Column="2" FontSize="Medium" Text="{Binding ProductName}"/>
+                                    </Grid>
+                                </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
-                        <ListView.Footer>
-                            <StackLayout>
-                                <Button x:Name="LoadAllButton" IsVisible="True" Text="Load all orders" Command="{Binding LoadAllOrdersCommand}" />
-                            </StackLayout>
-                        </ListView.Footer>
-                    </ListView>-->
+                    </ListView>
                 </StackLayout>
             </ScrollView>
             <ActivityIndicator

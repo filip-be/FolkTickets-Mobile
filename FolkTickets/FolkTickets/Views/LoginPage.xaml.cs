@@ -35,5 +35,12 @@ namespace FolkTickets.Views
                 ViewModel.LoginClicked.Execute(false);
             }
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Unsubscribe<LoginViewModel, MessagingCenterAlert>(this, "Error");
+        }
+
     }
 }

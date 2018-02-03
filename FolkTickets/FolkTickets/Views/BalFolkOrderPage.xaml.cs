@@ -26,5 +26,16 @@ namespace FolkTickets.Views
                 await DisplayAlert(item.Title, item.Message, item.Cancel);
             });
         }
-	}
+
+        private void TicketTapped(object sender, ItemTappedEventArgs e)
+        {
+
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Unsubscribe<LoginViewModel, MessagingCenterAlert>(this, "Error");
+        }
+    }
 }

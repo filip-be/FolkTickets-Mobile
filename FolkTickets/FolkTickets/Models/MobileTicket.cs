@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Forms;
 
 namespace FolkTickets.Models
 {
@@ -54,6 +55,22 @@ namespace FolkTickets.Models
         /// Ticket product short description
         /// </summary>
         public string ProductShortDescription { get; set; }
-
+        /// <summary>
+        /// Status color for UI
+        /// </summary>
+        public Color StatusColor
+        {
+            get
+            {
+                if(Status == 1)
+                {
+                    return Color.Default;
+                }
+                else
+                {
+                    return Color.LightGray;
+                }
+            }
+        }
     }
 }

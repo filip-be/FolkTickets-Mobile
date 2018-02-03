@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Xamarin.Forms;
 using System.Text;
 using WooCommerceNET.WooCommerce.v2;
 
@@ -57,5 +58,22 @@ namespace FolkTickets.Models
         /// read-write
         /// </summary>
         public List<MobileTicket> Tickets { get; set; }
+        /// <summary>
+        /// Status color for UI
+        /// </summary>
+        public Color StatusColor
+        {
+            get
+            {
+                Color color = Color.Default;
+                switch(Status?.ToLower())
+                {
+                    case "on-hold":
+                        color = Color.LightPink;
+                        break;
+                }
+                return color;
+            }
+        }
     }
 }

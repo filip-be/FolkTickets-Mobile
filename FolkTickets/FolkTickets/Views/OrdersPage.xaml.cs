@@ -42,18 +42,26 @@ namespace FolkTickets.Views
             });
         }
 
-        private async void Handle_ItemTapped(object sender, SelectedItemChangedEventArgs e)
+        private async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            if (e.SelectedItem == null)
+            if (e.Item == null)
                 return;
 
-            if(e.SelectedItem is MobileOrder)
+            if (e.Item is MobileOrder)
             {
-                await ViewModel.DisplayBalFolkOrder(((MobileOrder)e.SelectedItem).OrderId?.ToString());
+                await ViewModel.DisplayBalFolkOrder(((MobileOrder)e.Item).OrderId?.ToString());
             }
 
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Unsubscribe<LoginViewModel, MessagingCenterAlert>(this, "Error");
+            MessagingCenter.Unsubscribe<LoginViewModel, ZXingScannerPage>(this, "DisplayScanPage");
+            MessagingCenter.Unsubscribe<LoginViewModel, ZXing.Result>(this, "ScanCompleted");
         }
     }
 }

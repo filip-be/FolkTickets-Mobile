@@ -79,8 +79,19 @@ namespace FolkTickets.Services
             {
                 throw new ArgumentException("Language cannot be empty");
             }
+            bool useSSL = false;
+            if(userAccount.Properties.ContainsKey("UseSSL"))
+            {
+                bool.TryParse(userAccount.Properties["UseSSL"], out useSSL);
+            }
 
-            RestAPI rest = new RestAPI(userAccount.Username,
+            // Determine connection protocol
+            string connectionProtocol = useSSL ? "https" : "http";
+            // Prepare connection string
+            string wcAddress = $"{connectionProtocol}://{userAccount.Username}/wp-json/wc/v2";
+
+            // Create RestAPI object using prepared connection string
+            RestAPI rest = new RestAPI(wcAddress,
                 userAccount.Properties["ApiKey"],
                 userAccount.Properties["ApiSecret"],
                 true,
@@ -96,7 +107,53 @@ namespace FolkTickets.Services
 
             return new WCObject(rest);
         }
-
+        /*
+        private static IEnumerable<MobileOrder> FakeOrders = new List<MobileOrder>()
+                {
+                    new MobileOrder()
+                    {
+                        OrderId = 1,
+                        OrderKey = "123",
+                        Status = "on-hold",
+                        Type = "Full",
+                        CustomerFirstName = "John",
+                        CustomerLastName = "Smith",
+                        Tickets = new List<MobileTicket>()
+                        {
+                            new MobileTicket()
+                            {
+                                ID = 1,
+                                OrderID = 1,
+                                EventID = 1,
+                                EventName = "TestEvent",
+                                Hash = "H1",
+                                OrderItemID = 1,
+                                ProductID = 1,
+                                ProductName = "Test Product",
+                                ProductShortDescription = "Short description 1",
+                                Status = 1,
+                                TicketID = 1,
+                                Timestamp = "NOW"
+                            },
+                            new MobileTicket()
+                            {
+                                ID = 2,
+                                OrderID = 1,
+                                EventID = 1,
+                                EventName = "TestEvent",
+                                Hash = "H2",
+                                OrderItemID = 1,
+                                ProductID = 1,
+                                ProductName = "Test Product",
+                                ProductShortDescription = "Short description 1",
+                                Status = 10,
+                                TicketID = 1,
+                                Timestamp = "NOW2"
+                            },
+                        }
+                    }
+                };
+        */
         /// <summary>
         /// Get all WooCommerce orders
         /// </summary>
@@ -104,6 +161,8 @@ namespace FolkTickets.Services
         {
             try
             {
+                //return FakeOrders;
+                
                 WCObject api = GetWCApiObject(null);
                 List<Order> orders = await api.Order.GetAll();
                 return orders.Select(o => new MobileOrder()
@@ -117,6 +176,7 @@ namespace FolkTickets.Services
                     OrderKey = o.order_key,
                     CustomerNote = o.customer_note
                 });
+                
             }
             catch (Exception ex)
             {
@@ -132,6 +192,8 @@ namespace FolkTickets.Services
         {
             try
             {
+                //MobileOrder order = FakeOrders.FirstOrDefault();
+                
                 IList<BFTTicket> tickets = new List<BFTTicket>();
                 IList<BFTEvent> events = new List<BFTEvent>();
                 IList<Product> products = new List<Product>();
@@ -190,7 +252,7 @@ namespace FolkTickets.Services
 
                     order.Tickets.Add(mTicket);
                 }
-
+                
                 return order;
             }
             catch(Exception ex)

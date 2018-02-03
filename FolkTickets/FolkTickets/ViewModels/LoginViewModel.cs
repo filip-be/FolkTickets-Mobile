@@ -16,10 +16,22 @@ using Xamarin.Forms;
 
 namespace FolkTickets.ViewModels
 {
+    /// <summary>
+    /// Login View Modle
+    /// </summary>
     public class LoginViewModel : BaseViewModel
     {
-        private string _PageUriInput = string.Empty;
+        /// <summary>
+        /// Login clicked command
+        /// </summary>
         public ICommand LoginClicked { get; protected set; }
+        /// <summary>
+        /// Private: WP URI
+        /// </summary>
+        private string _PageUriInput = string.Empty;
+        /// <summary>
+        /// WP URI
+        /// </summary>
         public string PageUri
         {
             get
@@ -31,7 +43,13 @@ namespace FolkTickets.ViewModels
                 SetProperty(ref _PageUriInput, value);
             }
         }
+        /// <summary>
+        /// Private: API Key
+        /// </summary>
         private string _ApiKey = string.Empty;
+        /// <summary>
+        /// API Key
+        /// </summary>
         public string ApiKey
         {
             get
@@ -43,7 +61,13 @@ namespace FolkTickets.ViewModels
                 SetProperty(ref _ApiKey, value);
             }
         }
+        /// <summary>
+        /// Private: API Secret
+        /// </summary>
         private string _ApiSecret = string.Empty;
+        /// <summary>
+        /// API Secret
+        /// </summary>
         public string ApiSecret
         {
             get
@@ -55,7 +79,13 @@ namespace FolkTickets.ViewModels
                 SetProperty(ref _ApiSecret, value);
             }
         }
+        /// <summary>
+        /// Private: Defautl language
+        /// </summary>
         private CultureInfo _Language;
+        /// <summary>
+        /// Default language
+        /// </summary>
         public CultureInfo Language
         {
             get
@@ -67,13 +97,40 @@ namespace FolkTickets.ViewModels
                 SetProperty(ref _Language, value);
             }
         }
+        /// <summary>
+        /// Private: Use SSL
+        /// </summary>
+        private bool _UseSSL = false;
+        /// <summary>
+        /// Use SSL
+        /// </summary>
+        public bool UseSSL
+        {
+            get
+            {
+                return _UseSSL;
+            }
+            set
+            {
+                SetProperty(ref _UseSSL, value);
+            }
+        }
+        /// <summary>
+        /// Languages list
+        /// </summary>
         public ICollection<CultureInfo> Languages { get; private set; }
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public LoginViewModel() : base()
         {
+            // Page title
             Title = "Login";
 
+            // Login clicked command
             LoginClicked = new Command<bool>(Login);
 
+            // Load languages
             IsBusy = true;
             Languages = CultureInfo
                     .GetCultures(CultureTypes.AllCultures & ~CultureTypes.NeutralCultures)
@@ -81,6 +138,7 @@ namespace FolkTickets.ViewModels
                     .ToArray();
             string currentLang = null;
 
+            // Assign user account variables
             Account userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
             if(userAccount != null)
             {
@@ -96,6 +154,10 @@ namespace FolkTickets.ViewModels
                 if (userAccount.Properties.ContainsKey("Lang"))
                 {
                     currentLang = userAccount.Properties["Lang"];
+                }
+                if (userAccount.Properties.ContainsKey("UseSSL"))
+                {
+                    bool.TryParse(userAccount.Properties["UseSSL"], out _UseSSL);
                 }
             }
 
@@ -118,6 +180,7 @@ namespace FolkTickets.ViewModels
         /// <param name="displayErrors">Display errors to the view</param>
         private async void Login(bool useUserInput)
         {
+            // Do not execute twice
             if (IsBusy)
                 return;
             
@@ -128,6 +191,7 @@ namespace FolkTickets.ViewModels
             {
                 // Get user account from app store
                 userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
+                // Get user input only if requested
                 if (useUserInput)
                 {
                     if (userAccount == null)
@@ -161,39 +225,71 @@ namespace FolkTickets.ViewModels
                     {
                         userAccount.Properties.Add("Lang", Language?.Name);
                     }
+                    if (userAccount.Properties.ContainsKey("UseSSL"))
+                    {
+                        userAccount.Properties["UseSSL"] = UseSSL.ToString();
+                    }
+                    else
+                    {
+                        userAccount.Properties.Add("UseSSL", UseSSL.ToString());
+                    }
                 };
 
+                // No account found - return
                 if (userAccount == null)
                 {
                     return;
                 }
 
-                await WCService.TestCredentialsAsync(true, userAccount);
+                // Test connection to WooCommerce
+                bool connectionSucceeded = await WCService.TestCredentialsAsync(true, userAccount);
 
-                // Save credentials if the connection succeeded
-                AccountStore.Create(Forms.Context).Save(userAccount, App.AppName);
-
-                if(!(App.Current.MainPage is IconNavigationPage)
-                    || !((App.Current.MainPage as IconNavigationPage)?.CurrentPage is IconTabbedPage))
+                if (connectionSucceeded)
                 {
+                    // Remove all previously existing accounts
+                    AccountStore accountStore = AccountStore.Create(Forms.Context);
+                    foreach (var account in accountStore.FindAccountsForService(App.AppName))
+                    {
+                        accountStore.Delete(account, App.AppName);
+                    }
+
+                    // Save credentials if the connection succeeded
+                    AccountStore.Create(Forms.Context).Save(userAccount, App.AppName);
+
+                    // Check displayed page
+                    if (!(App.Current.MainPage is IconNavigationPage)
+                        || !((App.Current.MainPage as IconNavigationPage)?.CurrentPage is IconTabbedPage))
+                    {
+                        MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                        {
+                            Title = "Error",
+                            Message = "Logged succesfully, but there are invalid application pages. Cannot proceed!",
+                            Cancel = "OK"
+                        });
+                        return;
+                    }
+
+                    // Update App pages
+                    IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
+
+                    tabbedPage.Children.Clear();
+                    tabbedPage.Children.Add(new OrdersPage());
+                }
+                else
+                {
+                    // Connection error
                     MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                     {
                         Title = "Error",
-                        Message = "Logged succesfully, but there are invalid application pages. Cannot proceed!",
+                        Message = string.Format("Unable to login: Unknown error"),
                         Cancel = "OK"
                     });
-                    return;
                 }
-
-                IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
-
-                tabbedPage.Children.Clear();
-                tabbedPage.Children.Add(new OrdersPage());
-                
                 return;
             }
             catch (Exception ex)
             {
+                // Connection error
                 MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
                     Title = "Error",
@@ -204,6 +300,7 @@ namespace FolkTickets.ViewModels
             }
             finally
             {
+                // Update form data
                 if (userAccount != null)
                 {
                     PageUri = userAccount.Username;

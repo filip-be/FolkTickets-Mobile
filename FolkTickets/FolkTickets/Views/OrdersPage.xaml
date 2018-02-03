@@ -22,7 +22,7 @@
                         <!--Built in Cells-->
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextCell>
+                                <TextCell >
                                     <TextCell.Text>
                                         <xfProxy:MultiBinding StringFormat="Order {0}">
                                             <Binding Path="OrderId"/>
