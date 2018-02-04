@@ -42,7 +42,7 @@
                                 <ViewCell>
                                     <Grid BackgroundColor="{Binding StatusColor}">
                                         <iconize:IconLabel Grid.Column="1" Text="fa-times"/>
-                                        <Label Grid.Column="2" FontSize="Medium" Text="{Binding ProductName}"/>
+                                        <Label Grid.Column="2" FontSize="Small" VerticalOptions="CenterAndExpand" Text="{Binding ProductName}"/>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>

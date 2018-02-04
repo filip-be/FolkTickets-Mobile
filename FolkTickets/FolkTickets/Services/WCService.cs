@@ -200,11 +200,13 @@ namespace FolkTickets.Services
 
                 WCObject api = GetWCApiObject(null);
                 BFTOrder bftOrder = await api.BFTOrder.Get(key);
-                MobileOrder order = new MobileOrder();
-                order.OrderId = bftOrder.OrderId;
-                order.OrderKey = key;
-                order.Status = bftOrder.Status;
-                order.Type = bftOrder.Type;
+                MobileOrder order = new MobileOrder
+                {
+                    OrderId = bftOrder.OrderId,
+                    OrderKey = key,
+                    Status = bftOrder.Status,
+                    Type = bftOrder.Type
+                };
 
                 Order wcOrder = await api.Order.Get(order.OrderId.ToString());
                 order.CustomerFirstName = wcOrder.billing.first_name;
@@ -216,15 +218,16 @@ namespace FolkTickets.Services
                 order.Tickets = new List<MobileTicket>();
                 foreach(var ticket in bftOrder.Tickets)
                 {
-                    MobileTicket mTicket = new MobileTicket();
-
-                    mTicket.ID = ticket.ID;
-                    mTicket.TicketID = ticket.TicketID;
-                    mTicket.OrderID = ticket.OrderID;
-                    mTicket.OrderItemID = ticket.OrderItemID;
-                    mTicket.Hash = ticket.Hash;
-                    mTicket.Timestamp = ticket.Timestamp;
-                    mTicket.Status = ticket.Status;
+                    MobileTicket mTicket = new MobileTicket
+                    {
+                        ID = ticket.ID,
+                        TicketID = ticket.TicketID,
+                        OrderID = ticket.OrderID,
+                        OrderItemID = ticket.OrderItemID,
+                        Hash = ticket.Hash,
+                        Timestamp = ticket.Timestamp,
+                        Status = ticket.Status
+                    };
 
                     BFTTicket bftTicket = tickets.Where(t => t.Id == mTicket.TicketID).FirstOrDefault();
                     if(bftTicket == null)

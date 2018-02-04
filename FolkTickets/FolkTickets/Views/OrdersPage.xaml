@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:FolkTickets"
              x:Class="FolkTickets.Views.OrdersPage"
              xmlns:vm="clr-namespace:FolkTickets.ViewModels"
+             xmlns:oid="clr-namespace:FolkTickets.Controls"
              Title="Orders">
     <ContentPage.ToolbarItems>
         <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="{Binding ScanClicked}"/>
@@ -17,25 +18,19 @@
                 <StackLayout>
                     <SearchBar Placeholder="Search order" Text="{Binding SearchText, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}"/>
                     <ListView ItemsSource="{Binding Items}"
-                        ItemTapped="Handle_ItemTapped"
-                        CachingStrategy="RecycleElement">
+                              ItemTapped="Handle_ItemTapped"
+                              CachingStrategy="RecycleElement"
+                              HasUnevenRows="True">
                         <!--Built in Cells-->
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextCell >
-                                    <TextCell.Text>
-                                        <xfProxy:MultiBinding StringFormat="Order {0}">
-                                            <Binding Path="OrderId"/>
-                                        </xfProxy:MultiBinding>
-                                    </TextCell.Text>
-                                    <TextCell.Detail>
-                                        <xfProxy:MultiBinding StringFormat="Customer: {0} {1}. Status: {2}">
-                                            <Binding Path="CustomerFirstName"/>
-                                            <Binding Path="CustomerLastName"/>
-                                            <Binding Path="Status"/>
-                                        </xfProxy:MultiBinding>
-                                    </TextCell.Detail>
-                                </TextCell>
+                                <oid:OrderCell 
+                                    OrderId="{Binding Path=OrderId}"
+                                    OrderStatus="{Binding Path=Status}"
+                                    CustomerFirstName="{Binding CustomerFirstName}"
+                                    CustomerLastName="{Binding CustomerLastName}"
+                                    TextColor="{StaticResource Key=Accent}"
+                                    DetailColor="{StaticResource Key=LightTextColor}"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                         <ListView.Footer>
