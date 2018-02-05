@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:FolkTickets"
              x:Class="FolkTickets.Views.OrdersPage"
              xmlns:vm="clr-namespace:FolkTickets.ViewModels"
-             xmlns:oid="clr-namespace:FolkTickets.Controls"
+             xmlns:fc="clr-namespace:FolkTickets.Controls"
              Title="Orders">
     <ContentPage.ToolbarItems>
         <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="{Binding ScanClicked}"/>
@@ -24,7 +24,7 @@
                         <!--Built in Cells-->
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <oid:OrderCell 
+                                <fc:OrderCell 
                                     OrderId="{Binding Path=OrderId}"
                                     OrderStatus="{Binding Path=Status}"
                                     CustomerFirstName="{Binding CustomerFirstName}"

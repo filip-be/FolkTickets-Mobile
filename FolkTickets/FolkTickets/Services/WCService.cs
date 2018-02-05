@@ -163,8 +163,34 @@ namespace FolkTickets.Services
             {
                 //return FakeOrders;
                 
+                // Initialize connection object
                 WCObject api = GetWCApiObject(null);
-                List<Order> orders = await api.Order.GetAll();
+
+                List<Order> orders = new List<Order>();
+
+                // Query parameters
+                int ordersPerPage = 100;
+                int pageNum = 1;
+                Dictionary<string, string> queryParms = new Dictionary<string, string>
+                {
+                    { "per_page", ordersPerPage.ToString() },
+                    { "page", pageNum.ToString() }
+                };
+                do
+                {
+                    // Loop order pages
+                    List<Order> tempOrders = await api.Order.GetAll(queryParms);
+                    if (tempOrders.Count == 0)
+                    {
+                        break;
+                    }
+                    orders.AddRange(tempOrders);
+                    //break;
+                    ++pageNum;
+                    queryParms["page"] = pageNum.ToString();
+                } while (true);
+
+                // Return orders
                 return orders.Select(o => new MobileOrder()
                 {
                     OrderId = o.id,

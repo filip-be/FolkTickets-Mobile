@@ -76,51 +76,6 @@ namespace FolkTickets.Controls
                 SetValue(DetailColorProperty, value);
             }
         }
-        public Color BackgroundColorUndefined
-        {
-            get
-            {
-                return (Color)GetValue(BackgroundColorUndefinedProperty);
-            }
-            set
-            {
-                SetValue(BackgroundColorUndefinedProperty, value);
-            }
-        }
-        public Color BackgroundColorOnHold
-        {
-            get
-            {
-                return (Color)GetValue(BackgroundColorOnHoldProperty);
-            }
-            set
-            {
-                SetValue(BackgroundColorOnHoldProperty, value);
-            }
-        }
-        public Color BackgroundColorFailed
-        {
-            get
-            {
-                return (Color)GetValue(BackgroundColorFailedProperty);
-            }
-            set
-            {
-                SetValue(BackgroundColorFailedProperty, value);
-            }
-        }
-        public Color BackgroundgColorDefault
-        {
-            get
-            {
-                return (Color)GetValue(BackgroundgColorDefaultProperty);
-            }
-            set
-            {
-                SetValue(BackgroundgColorDefaultProperty, value);
-            }
-        }
-
 
         public static BindableProperty OrderIdProperty = BindableProperty.Create(
                 "OrderId",
@@ -139,26 +94,6 @@ namespace FolkTickets.Controls
                 "OrderStatus",
                 typeof(string),
                 typeof(OrderCell));
-        public static BindableProperty BackgroundgColorDefaultProperty = BindableProperty.Create(
-                "BackgroundgColorDefault",
-                typeof(Color),
-                typeof(OrderCell),
-                Color.FromHex("#FAFAFA"));
-        public static BindableProperty BackgroundColorFailedProperty = BindableProperty.Create(
-                "BackgroundColorFailed",
-                typeof(Color),
-                typeof(OrderCell),
-                Color.LightPink);
-        public static BindableProperty BackgroundColorOnHoldProperty = BindableProperty.Create(
-                "BackgroundColorOnHold",
-                typeof(Color),
-                typeof(OrderCell),
-                Color.FromHex("#C0C0C0"));
-        public static BindableProperty BackgroundColorUndefinedProperty = BindableProperty.Create(
-                "BackgroundColorUndefined",
-                typeof(Color),
-                typeof(OrderCell),
-                Color.LightPink);
         public static BindableProperty TextColorProperty = BindableProperty.Create(
                 "TextColor",
                 typeof(Color),
@@ -182,8 +117,7 @@ namespace FolkTickets.Controls
             LabelOrder.TextColor = DetailColor;
             LabelStatus.Text = $"Status: {OrderStatus}";
             LabelStatus.TextColor = DetailColor;
-            View.BackgroundColor = GetGBColorFromStatus();
-            
+            View.BackgroundColor = (Color)new StatusToColorConverter().Convert(OrderStatus, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
         }
 
         /// <summary>
@@ -204,7 +138,8 @@ namespace FolkTickets.Controls
                     new ColumnDefinition() { Width = GridLength.Star },
                     new ColumnDefinition() { Width = GridLength.Auto }
                 },
-                BackgroundColor = GetGBColorFromStatus(),
+                BackgroundColor =
+                    (Color) new StatusToColorConverter().Convert(OrderStatus, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture),
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand
             };
@@ -220,36 +155,6 @@ namespace FolkTickets.Controls
             cellWrapper.Children.Add(LabelStatus, 1, 1);
 
             View = cellWrapper;
-        }
-
-        /// <summary>
-        /// Get color from order status
-        /// </summary>
-        /// <returns></returns>
-        private Color GetGBColorFromStatus()
-        {
-            Color bgColor = BackgroundgColorDefault;
-            switch (OrderStatus)
-            {
-                case "pending":
-                case "processing":
-                case "onhold":
-                case "on-hold":
-                    bgColor = BackgroundColorOnHold;
-                    break;
-                case "completed":
-                    bgColor = BackgroundgColorDefault;
-                    break;
-                case "failed":
-                case "cancelled":
-                case "refunded":
-                    bgColor = BackgroundColorFailed;
-                    break;
-                default:
-                    bgColor = BackgroundColorUndefined;
-                    break;
-            };
-            return bgColor;
         }
     }
 }
