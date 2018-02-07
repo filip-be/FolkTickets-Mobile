@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using FolkTickets.Views;
@@ -12,6 +13,7 @@ using FolkTickets.Services;
 using FolkTickets.Models;
 using FormsPlugin.Iconize;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace FolkTickets.ViewModels
 {
@@ -21,9 +23,11 @@ namespace FolkTickets.ViewModels
     public class OrdersViewModel : BaseViewModel
     {
         /// <summary>
-        /// List of itmes
+        /// List of items
         /// </summary>
         public ObservableCollection<MobileOrder> Items { get; protected set; }
+        // BFT orders list
+        protected IEnumerable<MobileOrder> Orders { get; set; }
         /// <summary>
         /// QR scan button clicked command
         /// </summary>
@@ -66,6 +70,53 @@ namespace FolkTickets.ViewModels
             ScanClicked = new Command(ScanQR);
             SearchCommand = new Command(FindOrder);
             LoadAllOrdersCommand = new Command(LoadAllOrders);
+            PropertyChanged += OnSearchTextChanged;
+        }
+
+        private void OnSearchTextChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName.Equals("SearchText"))
+            {
+                try
+                {
+                    if(Orders == null)
+                    {
+                        return;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(SearchText))
+                    {
+                        Items.Clear();
+                        foreach (var order in Orders)
+                        {
+                            Items.Add(order);
+                        }
+                        return;
+                    }
+                    IEnumerable<MobileOrder> limitedOrders = Orders
+                        .Where(o =>
+                            o.OrderId.ToString().StartsWith(SearchText)
+                            || o.CustomerName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
+                            || o.CustomerNote.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
+                            || o.CustomerPhone.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
+                            || o.CustomerMail.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1);
+
+                    Items.Clear();
+                    foreach (var order in limitedOrders)
+                    {
+                        Items.Add(order);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = string.Format("Error filtering orders: {0}", ex.Message),
+                        Cancel = "OK"
+                    });
+                }
+            }
         }
 
         /// <summary>
@@ -79,9 +130,9 @@ namespace FolkTickets.ViewModels
             IsBusy = true;
             try
             {
-                IEnumerable<MobileOrder> orders = await WCService.GetAllWCOrders();
+                Orders = await WCService.GetAllWCOrders();
                 Items.Clear();
-                foreach (var order in orders)
+                foreach (var order in Orders)
                 {
                     Items.Add(order);
                 }

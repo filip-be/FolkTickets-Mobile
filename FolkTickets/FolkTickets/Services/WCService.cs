@@ -166,41 +166,18 @@ namespace FolkTickets.Services
                 // Initialize connection object
                 WCObject api = GetWCApiObject(null);
 
-                List<Order> orders = new List<Order>();
-
-                // Query parameters
-                int ordersPerPage = 100;
-                int pageNum = 1;
-                Dictionary<string, string> queryParms = new Dictionary<string, string>
-                {
-                    { "per_page", ordersPerPage.ToString() },
-                    { "page", pageNum.ToString() }
-                };
-                do
-                {
-                    // Loop order pages
-                    List<Order> tempOrders = await api.Order.GetAll(queryParms);
-                    if (tempOrders.Count == 0)
-                    {
-                        break;
-                    }
-                    orders.AddRange(tempOrders);
-                    //break;
-                    ++pageNum;
-                    queryParms["page"] = pageNum.ToString();
-                } while (true);
+                List<BFTOrder> orders = await api.BFTOrder.GetAll();
 
                 // Return orders
                 return orders.Select(o => new MobileOrder()
                 {
-                    OrderId = o.id,
-                    Status = o.status,
-                    CustomerFirstName = o.billing.first_name,
-                    CustomerLastName = o.billing.last_name,
-                    CustomerMail = o.billing.email,
-                    CustomerPhone = o.billing.phone,
-                    OrderKey = o.order_key,
-                    CustomerNote = o.customer_note
+                    OrderId = o.OrderId,
+                    Status = o.Status,
+                    CustomerName = o.OrderBillingName,
+                    CustomerMail = o.OrderBillingEmail,
+                    CustomerPhone = o.OrderBillingPhone,
+                    OrderKey = o.OrderKey,
+                    CustomerNote = o.OrderCustomerNote,
                 });
                 
             }
@@ -235,8 +212,7 @@ namespace FolkTickets.Services
                 };
 
                 Order wcOrder = await api.Order.Get(order.OrderId.ToString());
-                order.CustomerFirstName = wcOrder.billing.first_name;
-                order.CustomerLastName = wcOrder.billing.last_name;
+                order.CustomerName = wcOrder.billing.first_name;
                 order.CustomerMail = wcOrder.billing.email;
                 order.CustomerPhone = wcOrder.billing.phone;
                 order.CustomerNote = wcOrder.customer_note;

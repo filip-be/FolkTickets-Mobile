@@ -32,21 +32,14 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
+                        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" TextColor="{StaticResource Key=Accent}">
                             <Label.Text>
                                 <xfProxy:MultiBinding StringFormat="Order: {0}">
                                     <Binding Path="Order.OrderId"/>
                                 </xfProxy:MultiBinding>
                             </Label.Text>
                         </Label>
-                        <Label Grid.Column="0" Grid.Row="1">
-                            <Label.Text>
-                                <xfProxy:MultiBinding StringFormat="Customer: {0} {1}">
-                                    <Binding Path="Order.CustomerFirstName"/>
-                                    <Binding Path="Order.CustomerLastName"/>
-                                </xfProxy:MultiBinding>
-                            </Label.Text>
-                        </Label>
+                        <Label Text="{Binding Order.CustomerName}" Grid.Column="0" Grid.Row="1"/>
                         <Label Grid.Column="1" Grid.Row="1">
                             <Label.Text>
                                 <xfProxy:MultiBinding StringFormat="Status: {0}">
@@ -56,8 +49,8 @@
                         </Label>
                         <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2">
                             <Label.Text>
-                                <xfProxy:MultiBinding StringFormat="Notes: {0}">
-                                    <Binding Path="Order.CustomerNotes"/>
+                                <xfProxy:MultiBinding StringFormat="{}{0}">
+                                    <Binding Path="Order.CustomerNote"/>
                                 </xfProxy:MultiBinding>
                             </Label.Text>
                         </Label>

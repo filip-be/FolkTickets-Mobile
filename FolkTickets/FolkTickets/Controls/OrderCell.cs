@@ -21,26 +21,15 @@ namespace FolkTickets.Controls
                 SetValue(OrderIdProperty, value);
             }
         }
-        public string CustomerFirstName
+        public string CustomerName
         {
             get
             {
-                return (string)GetValue(CustomerFirstNameProperty);
+                return (string)GetValue(CustomerNameProperty);
             }
             set
             {
-                SetValue(CustomerFirstNameProperty, value);
-            }
-        }
-        public string CustomerLastName
-        {
-            get
-            {
-                return (string)GetValue(CustomerLastNameProperty);
-            }
-            set
-            {
-                SetValue(CustomerLastNameProperty, value);
+                SetValue(CustomerNameProperty, value);
             }
         }
         public string OrderStatus
@@ -82,12 +71,8 @@ namespace FolkTickets.Controls
                 typeof(int),
                 typeof(OrderCell),
                 0);
-        public static BindableProperty CustomerFirstNameProperty = BindableProperty.Create(
-                "CustomerFirstName",
-                typeof(string),
-                typeof(OrderCell));
-        public static BindableProperty CustomerLastNameProperty = BindableProperty.Create(
-                "CustomerLastName",
+        public static BindableProperty CustomerNameProperty = BindableProperty.Create(
+                "CustomerName",
                 typeof(string),
                 typeof(OrderCell));
         public static BindableProperty OrderStatusProperty = BindableProperty.Create(
@@ -113,7 +98,7 @@ namespace FolkTickets.Controls
 
             LabelOrder.Text = $"Order {OrderId}";
             LabelOrder.TextColor = TextColor;
-            LabelCustomer.Text = $"{CustomerFirstName} {CustomerLastName}";
+            LabelCustomer.Text = CustomerName;
             LabelOrder.TextColor = DetailColor;
             LabelStatus.Text = $"Status: {OrderStatus}";
             LabelStatus.TextColor = DetailColor;
@@ -146,7 +131,7 @@ namespace FolkTickets.Controls
 
             // Initialize labels
             LabelOrder = new Label() { Text = $"Order {OrderId}", TextColor = TextColor };
-            LabelCustomer = new Label() { Text = $"{CustomerFirstName} {CustomerLastName}", TextColor = DetailColor };
+            LabelCustomer = new Label() { Text = CustomerName, TextColor = DetailColor };
             LabelStatus = new Label() { Text = $"Status: {OrderStatus}", TextColor = DetailColor, HorizontalTextAlignment = TextAlignment.End };
 
             // Add

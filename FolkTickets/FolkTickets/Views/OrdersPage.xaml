@@ -27,8 +27,7 @@
                                 <fc:OrderCell 
                                     OrderId="{Binding Path=OrderId}"
                                     OrderStatus="{Binding Path=Status}"
-                                    CustomerFirstName="{Binding CustomerFirstName}"
-                                    CustomerLastName="{Binding CustomerLastName}"
+                                    CustomerName="{Binding CustomerName}"
                                     TextColor="{StaticResource Key=Accent}"
                                     DetailColor="{StaticResource Key=LightTextColor}"/>
                             </DataTemplate>

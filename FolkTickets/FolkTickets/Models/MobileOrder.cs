@@ -22,12 +22,7 @@ namespace FolkTickets.Models
         /// Customer first name
         /// read-only
         /// </summary>
-        public string CustomerFirstName { get; set; }
-        /// <summary>
-        /// Customer last name
-        /// read-only
-        /// </summary>
-        public string CustomerLastName { get; set; }
+        public string CustomerName { get; set; }
         /// <summary>
         /// Customer note defined within the order
         /// read-only
