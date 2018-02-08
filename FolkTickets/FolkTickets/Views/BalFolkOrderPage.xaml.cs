@@ -27,6 +27,15 @@ namespace FolkTickets.Views
             });
         }
 
+        public async void CloseClicked()
+        {
+            bool closePage = await DisplayAlert("Close", "Do you really want to close this page?", "Yes", "No");
+            if (closePage)
+            {
+                ViewModel.CloseClicked.Execute(null);
+            }
+        }
+
         private void TicketTapped(object sender, ItemTappedEventArgs e)
         {
 
@@ -35,7 +44,7 @@ namespace FolkTickets.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            MessagingCenter.Unsubscribe<LoginViewModel, MessagingCenterAlert>(this, "Error");
+            MessagingCenter.Unsubscribe<BalFolkOrderViewModel, MessagingCenterAlert>(this, "Error");
         }
     }
 }

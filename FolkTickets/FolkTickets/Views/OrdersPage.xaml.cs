@@ -9,7 +9,6 @@ using Xamarin.Forms.Xaml;
 using FolkTickets.ViewModels;
 using FolkTickets.Helpers;
 using ZXing.Net.Mobile.Forms;
-using System.Windows.Input;
 using FolkTickets.Models;
 
 namespace FolkTickets.Views

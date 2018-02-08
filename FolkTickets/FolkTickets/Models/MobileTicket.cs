@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WooCommerceNET.WooCommerce.v2;
 using Xamarin.Forms;
 
 namespace FolkTickets.Models

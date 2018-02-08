@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\MobileTicket.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\OrderCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\WCService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\TicketStatusToIconConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BalFolkOrderViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />

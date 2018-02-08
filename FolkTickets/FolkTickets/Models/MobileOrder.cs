@@ -54,6 +54,11 @@ namespace FolkTickets.Models
         /// </summary>
         public List<MobileTicket> Tickets { get; set; }
         /// <summary>
+        /// Order notes
+        /// read-only
+        /// </summary>
+        public List<BFTOrderNote> OrderNotes { get; set; }
+        /// <summary>
         /// Status color for UI
         /// </summary>
         public Color StatusColor

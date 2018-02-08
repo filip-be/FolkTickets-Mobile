@@ -59,6 +59,24 @@ namespace FolkTickets.ViewModels
             }
         }
         /// <summary>
+        /// Private variable - LoadAllOrders button text
+        /// </summary>
+        private string _LoadAllOrdersText = "Load all orders";
+        /// <summary>
+        /// LoadAllOrders button text
+        /// </summary>
+        public string LoadAllOrdersText
+        {
+            get
+            {
+                return _LoadAllOrdersText;
+            }
+            set
+            {
+                SetProperty(ref _LoadAllOrdersText, value);
+            }
+        }
+        /// <summary>
         /// Default constructor
         /// </summary>
         public OrdersViewModel() : base()
@@ -99,7 +117,10 @@ namespace FolkTickets.ViewModels
                             || o.CustomerName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
                             || o.CustomerNote.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
                             || o.CustomerPhone.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                            || o.CustomerMail.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1);
+                            || o.CustomerMail.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
+                            || o.OrderKey.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
+                            || (o.Tickets != null && o.Tickets.Where(t => t.Hash.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1).Any())
+                            );
 
                     Items.Clear();
                     foreach (var order in limitedOrders)
@@ -136,6 +157,7 @@ namespace FolkTickets.ViewModels
                 {
                     Items.Add(order);
                 }
+                LoadAllOrdersText = "Reload orders";
             }
             catch (Exception ex)
             {
@@ -247,8 +269,7 @@ namespace FolkTickets.ViewModels
                 }
                 IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
 
-                BalFolkOrderViewModel model = new BalFolkOrderViewModel();
-                await model.Initialize(key);
+                BalFolkOrderViewModel model = new BalFolkOrderViewModel(key);
 
                 var newPage = new BalFolkOrderPage(model);
                 tabbedPage.Children.Add(newPage);

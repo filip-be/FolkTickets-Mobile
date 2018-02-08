@@ -14,21 +14,82 @@ namespace FolkTickets.ViewModels
 {
     public class BalFolkOrderViewModel : BaseViewModel
     {
-        public MobileOrder Order { get; protected set; }
+        private MobileOrder _Order;
+        public MobileOrder Order
+        {
+            get
+            {
+                return _Order;
+            }
+            protected set
+            {
+                SetProperty(ref _Order, value);
+            }
+        }
         public ICommand CloseClicked { get; protected set; }
         public ICommand UpdateClicked { get; protected set; }
+        public ICommand InfoClicked { get; protected set; }
 
-        public BalFolkOrderViewModel() : base()
+        public BalFolkOrderViewModel(string key) : base()
         {
             Title = "Order";
 
             CloseClicked = new Command(ClosePage);
             UpdateClicked = new Command(UpdateTickets);
+            InfoClicked = new Command(ShowInfo);
+
+            Initialize(key);
         }
 
-        public async Task Initialize(string key)
+        private void ShowInfo(object obj)
         {
-            Order = await WCService.GetBFTOrder(key);
+            if(Order == null)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = "Order is null",
+                    Cancel = "OK"
+                });
+                return;
+            }
+
+            string orderDetails = string.Format("{1}{0}{2}{0}{3}{0}{0}Order messages:{0}{4}",
+                Environment.NewLine,
+                Order.CustomerName,
+                Order.CustomerMail,
+                Order.CustomerPhone,
+                string.Join(Environment.NewLine, Order.OrderNotes.Select(n => $"{n.date_created.date.TrimEnd(new char[] { '0'})} ({n.added_by}):{Environment.NewLine}{n.content}")));
+
+            MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+            {
+                Title = "Info",
+                Message = orderDetails,
+                Cancel = "OK"
+            });
+        }
+
+        private async Task Initialize(string key)
+        {
+            IsBusy = true;
+            try
+            {
+                Order = await WCService.GetBFTOrder(key);
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = string.Format("Could not load order: {0}", ex.Message),
+                    Cancel = "OK"
+                });
+                ClosePage();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private void ClosePage()

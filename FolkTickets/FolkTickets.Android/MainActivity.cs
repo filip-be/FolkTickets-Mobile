@@ -11,6 +11,10 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using FormsPlugin.Iconize.Droid;
 using Plugin.Iconize;
+using FormsPlugin.Iconize;
+using FolkTickets.Views;
+using Xamarin.Forms;
+using FolkTickets.Helpers;
 
 namespace FolkTickets.Droid
 {
@@ -38,6 +42,22 @@ namespace FolkTickets.Droid
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             ZXing.Net.Mobile.Forms.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        public override void OnBackPressed()
+        {
+            try
+            {
+                IconTabbedPage tabbedPage = (App.Current?.MainPage as IconNavigationPage)?.CurrentPage as IconTabbedPage;
+                Page selectedPage = tabbedPage?.CurrentPage;
+                if (selectedPage != null
+                    && selectedPage is BalFolkOrderPage)
+                {
+                    (selectedPage as BalFolkOrderPage).CloseClicked();
+                }
+            }
+            catch(Exception) { }
+            return;
         }
     }
 }
