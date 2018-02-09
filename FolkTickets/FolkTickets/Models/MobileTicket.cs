@@ -1,12 +1,14 @@
-﻿using System;
+﻿using FolkTickets.Helpers;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using WooCommerceNET.WooCommerce.v2;
 using Xamarin.Forms;
 
 namespace FolkTickets.Models
 {
-    public class MobileTicket
+    public class MobileTicket : ObservableObject
     {
         /// <summary>
         /// Ticket ID
@@ -33,9 +35,23 @@ namespace FolkTickets.Models
         /// </summary>
         public string Timestamp { get; set; }
         /// <summary>
+        /// Ticket status - internal
+        /// </summary>
+        private int? _Status;
+        /// <summary>
         /// Ticket status
         /// </summary>
-        public int? Status { get; set; }
+        public int? Status
+        {
+            get
+            {
+                return _Status;
+            }
+            set
+            {
+                SetProperty(ref _Status, value);
+            }
+        }
         /// <summary>
         /// Ticket event ID
         /// </summary>
@@ -63,15 +79,35 @@ namespace FolkTickets.Models
         {
             get
             {
+                if(Edited)
+                {
+                    return Color.YellowGreen;
+                }
                 if(Status == 1)
                 {
                     return Color.Default;
                 }
-                else
-                {
-                    return Color.LightGray;
-                }
+                return Color.LightGray;
             }
         }
+        /// <summary>
+        /// Ticket edited info
+        /// </summary>
+        public bool Edited { get; set; } = false;
+        /// <summary>
+        /// Allow edit already checked tickets
+        /// </summary>
+        public bool AllowEditChecked { get; set; } = false;
+        /// <summary>
+        /// Is ticket editable
+        /// </summary>
+        public bool IsEditable
+        {
+            get
+            {
+                return AllowEditChecked || Status == 1 || Edited;
+            }
+        }
+
     }
 }

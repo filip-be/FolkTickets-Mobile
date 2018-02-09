@@ -13,6 +13,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\StatusToColorConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\TicketStatusToIconColorConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MessagingCenterAlert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObservableObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MobileOrder.cs" />
@@ -20,12 +21,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\OrderCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\WCService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TicketStatusToIconConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BalFolkOrderViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\OrderViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\OrdersViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Views\BalFolkOrderPage.xaml.cs">
-      <DependentUpon>BalFolkOrderPage.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\OrderPage.xaml.cs">
+      <DependentUpon>OrderPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\LoginPage.xaml.cs">
@@ -53,7 +54,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\BalFolkOrderPage.xaml">
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\OrderPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

@@ -24,16 +24,19 @@ namespace FolkTickets.Views
 			InitializeComponent();
 
             BindingContext = ViewModel = new LoginViewModel();
-
-            MessagingCenter.Subscribe<LoginViewModel, MessagingCenterAlert>(this, "Error", async (sender, item) =>
-            {
-                await DisplayAlert(item.Title, item.Message, item.Cancel);
-            });
-
+            
             if (tryToLogin)
             {
                 ViewModel.LoginClicked.Execute(false);
             }
+        }
+
+        protected override void OnAppearing()
+        {
+            MessagingCenter.Subscribe<LoginViewModel, MessagingCenterAlert>(this, "Error", async (sender, item) =>
+            {
+                await DisplayAlert(item.Title, item.Message, item.Cancel);
+            });
         }
 
         protected override void OnDisappearing()

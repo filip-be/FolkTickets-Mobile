@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FolkTickets.Views.BalFolkOrderPage"
+             x:Class="FolkTickets.Views.OrderPage"
              xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
              xmlns:xfProxy="clr-namespace:Xamarin.Forms.Proxy;assembly=Xamarin.Forms.Core.UnitTests"
              xmlns:local="clr-namespace:FolkTickets"
@@ -18,6 +18,7 @@
         <ResourceDictionary>
             <fc:StatusToColorConverter x:Key="StatusToColorConverter"/>
             <fc:TicketStatusToIconConverter x:Key="TicketStatusToIconConverter"/>
+            <fc:TicketStatusToIconColorConverter x:Key="TicketStatusToIconColorConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -66,13 +67,18 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <Grid BackgroundColor="{Binding StatusColor}">
+                                    <Grid BackgroundColor="{Binding StatusColor}" IsEnabled="{Binding IsEditable}" Padding="0" Margin="5">
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <iconize:IconLabel Grid.Column="1" Text="{Binding Status, Converter={StaticResource TicketStatusToIconConverter}}" FontSize="Large" VerticalTextAlignment="Center" />
-                                        <Label Grid.Column="2" FontSize="Small" VerticalOptions="CenterAndExpand" Text="{Binding ProductName}"/>
+                                        <iconize:IconLabel Grid.Column="1" 
+                                                           Text="{Binding Status, Mode=TwoWay, Converter={StaticResource TicketStatusToIconConverter}}" 
+                                                           TextColor="{Binding Status, Converter={StaticResource TicketStatusToIconColorConverter}}" 
+                                                           FontSize="Large" 
+                                                           VerticalTextAlignment="Center"
+                                                           HorizontalTextAlignment="Start"/>
+                                        <Label Grid.Column="2" FontSize="Small" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start" Text="{Binding ProductName}"/>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>

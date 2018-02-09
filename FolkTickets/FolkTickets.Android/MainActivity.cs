@@ -50,11 +50,23 @@ namespace FolkTickets.Droid
             {
                 IconTabbedPage tabbedPage = (App.Current?.MainPage as IconNavigationPage)?.CurrentPage as IconTabbedPage;
                 Page selectedPage = tabbedPage?.CurrentPage;
-                if (selectedPage != null
-                    && selectedPage is BalFolkOrderPage)
+                if(selectedPage != null)
                 {
-                    (selectedPage as BalFolkOrderPage).CloseClicked();
+                    if(selectedPage is OrderPage)
+                    {
+                        (selectedPage as OrderPage).CloseClicked();
+                        return;
+                    }
+                    if(selectedPage is LoginPage)
+                    {
+                        return;
+                    }
+                    if(selectedPage is OrdersPage && !(selectedPage as OrdersPage).Scanning)
+                    {
+                        return;
+                    }   
                 }
+                base.OnBackPressed();
             }
             catch(Exception) { }
             return;

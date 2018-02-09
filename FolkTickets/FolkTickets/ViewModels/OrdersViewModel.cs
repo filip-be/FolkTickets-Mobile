@@ -200,6 +200,7 @@ namespace FolkTickets.ViewModels
                 {
                     SearchText = result?.Text;
                     MessagingCenter.Send(this, "ScanCompleted", result);
+                    FindOrder();
                 };
 
                 MessagingCenter.Send(this, "DisplayScanPage", scanPage);
@@ -223,7 +224,7 @@ namespace FolkTickets.ViewModels
         /// <summary>
         /// Find specific order
         /// </summary>
-        private async void FindOrder()
+        private void FindOrder()
         {
             if (IsBusy)
                 return;
@@ -231,7 +232,7 @@ namespace FolkTickets.ViewModels
             IsBusy = true;
             try
             {
-                await DisplayBalFolkOrder(SearchText);
+                DisplayBalFolkOrder(SearchText);
             }
             catch (Exception ex)
             {
@@ -248,7 +249,7 @@ namespace FolkTickets.ViewModels
             }
         }
 
-        public async Task DisplayBalFolkOrder(string key)
+        public void DisplayBalFolkOrder(string key)
         {
             if (IsBusy)
                 return;
@@ -269,9 +270,9 @@ namespace FolkTickets.ViewModels
                 }
                 IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
 
-                BalFolkOrderViewModel model = new BalFolkOrderViewModel(key);
+                OrderViewModel model = new OrderViewModel(key);
 
-                var newPage = new BalFolkOrderPage(model);
+                var newPage = new OrderPage(model);
                 tabbedPage.Children.Add(newPage);
                 tabbedPage.SelectedItem = newPage;
             }

@@ -12,19 +12,14 @@ using Xamarin.Forms.Xaml;
 namespace FolkTickets.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class BalFolkOrderPage : ContentPage
+	public partial class OrderPage : ContentPage
 	{
-        private BalFolkOrderViewModel ViewModel;
-		public BalFolkOrderPage (BalFolkOrderViewModel viewModel)
+        private OrderViewModel ViewModel;
+		public OrderPage(OrderViewModel viewModel)
 		{
 			InitializeComponent ();
 
             BindingContext = ViewModel = viewModel;
-
-            MessagingCenter.Subscribe<BalFolkOrderViewModel, MessagingCenterAlert>(this, "Error", async (sender, item) =>
-            {
-                await DisplayAlert(item.Title, item.Message, item.Cancel);
-            });
         }
 
         public async void CloseClicked()
@@ -38,13 +33,21 @@ namespace FolkTickets.Views
 
         private void TicketTapped(object sender, ItemTappedEventArgs e)
         {
+            ViewModel.TicketClicked.Execute(e.Item);
+        }
 
+        protected override void OnAppearing()
+        {
+            MessagingCenter.Subscribe<OrderViewModel, MessagingCenterAlert>(this, "Error", async (sender, item) =>
+            {
+                await DisplayAlert(item.Title, item.Message, item.Cancel);
+            });
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            MessagingCenter.Unsubscribe<BalFolkOrderViewModel, MessagingCenterAlert>(this, "Error");
+            MessagingCenter.Unsubscribe<OrderViewModel, MessagingCenterAlert>(this, "Error");
         }
     }
 }

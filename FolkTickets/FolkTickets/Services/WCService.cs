@@ -265,7 +265,7 @@ namespace FolkTickets.Services
                 
                 return order;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }

@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace FolkTickets.ViewModels
 {
-    public class BalFolkOrderViewModel : BaseViewModel
+    public class OrderViewModel : BaseViewModel
     {
         private MobileOrder _Order;
         public MobileOrder Order
@@ -29,16 +29,70 @@ namespace FolkTickets.ViewModels
         public ICommand CloseClicked { get; protected set; }
         public ICommand UpdateClicked { get; protected set; }
         public ICommand InfoClicked { get; protected set; }
+        public ICommand TicketClicked { get; protected set; }
 
-        public BalFolkOrderViewModel(string key) : base()
+        public OrderViewModel(string key) : base()
         {
             Title = "Order";
 
             CloseClicked = new Command(ClosePage);
             UpdateClicked = new Command(UpdateTickets);
             InfoClicked = new Command(ShowInfo);
+            TicketClicked = new Command(CheckTicket);
 
             Initialize(key);
+        }
+
+        private void CheckTicket(object obj)
+        {
+            try
+            {
+                if(obj == null || !(obj is MobileTicket))
+                {
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = $"Invalid object clicked: {obj}",
+                        Cancel = "OK"
+                    });
+                    return;
+                }
+                MobileTicket ticket = obj as MobileTicket;
+                if(!ticket.IsEditable)
+                {
+                    return;
+                }
+                ticket.Edited = true;
+                switch(ticket.Status)
+                {
+                    case 1:
+                        ticket.Status = 2;
+                        break;
+                    case 2:
+                        ticket.Status = 1;
+                        break;
+                    default:
+                        MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                        {
+                            Title = "Error",
+                            Message = $"Invalid ticket status: {ticket.Status}",
+                            Cancel = "OK"
+                        });
+                        return;
+                }
+                MobileOrder tempOrder = _Order;
+                Order = null;
+                Order = tempOrder;
+            }
+            catch(Exception ex)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = $"Error occured: {ex.Message}",
+                    Cancel = "OK"
+                });
+            }
         }
 
         private void ShowInfo(object obj)
