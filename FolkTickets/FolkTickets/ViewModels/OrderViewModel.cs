@@ -30,6 +30,7 @@ namespace FolkTickets.ViewModels
         public ICommand UpdateClicked { get; protected set; }
         public ICommand InfoClicked { get; protected set; }
         public ICommand TicketClicked { get; protected set; }
+        public ICommand AddNoteClicked { get; protected set; }
 
         public OrderViewModel(string key) : base()
         {
@@ -39,8 +40,69 @@ namespace FolkTickets.ViewModels
             UpdateClicked = new Command(UpdateTickets);
             InfoClicked = new Command(ShowInfo);
             TicketClicked = new Command(CheckTicket);
+            AddNoteClicked = new Command(AddNote);
 
             Initialize(key);
+        }
+
+        private async void AddNote(object obj)
+        {
+            if (Order?.OrderId == null)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = "Order ID is empty",
+                    Cancel = "OK"
+                });
+                return;
+            }
+
+            if (string.IsNullOrEmpty(obj as string))
+            {
+                // Do not add note twice
+                if(IsBusy)
+                {
+                    return;
+                }
+                MessagingCenter.Send(this, "Note", new MessagingCenterAlert());
+                return;
+            }
+
+            IsBusy = true;
+            try
+            {
+                // Add note
+                bool res = await WCService.AddOrderNote((int)Order.OrderId, obj as string);
+
+                // Update notes if add has succeeded
+                if (res)
+                {
+                    MobileOrder order = await WCService.GetBFTOrder(Order.OrderKey);
+                    Order.OrderNotes = order.OrderNotes;
+                }
+
+                // Return result message
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = res ? "Note" : "Error",
+                    Message = res ? "Added successfully" : "Error adding note",
+                    Cancel = "OK",
+                });
+            }
+            catch(Exception ex)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = $"Error adding note: {ex.Message}",
+                    Cancel = "OK",
+                });
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private void CheckTicket(object obj)
@@ -188,7 +250,7 @@ namespace FolkTickets.ViewModels
             }
         }
 
-        private void UpdateTickets()
+        private async void UpdateTickets()
         {
             if (IsBusy)
                 return;
@@ -196,13 +258,25 @@ namespace FolkTickets.ViewModels
             IsBusy = true;
             try
             {
+                string error = await WCService.UpdateOrder(Order);
+                bool success = string.IsNullOrWhiteSpace(error);
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = success ? "Success" : "Error",
+                    Message = success ? "Order has been updated successfully" : $"Update failed: {error}",
+                    Cancel = "OK"
+                });
+                if(success)
+                {
+                    await Initialize(Order.OrderKey);
+                }
             }
             catch (Exception ex)
             {
                 MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
                     Title = "Error",
-                    Message = string.Format("Could not close page: {0}", ex.Message),
+                    Message = $"Could not close page: {ex.Message}",
                     Cancel = "OK"
                 });
             }

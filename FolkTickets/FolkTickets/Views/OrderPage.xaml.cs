@@ -1,5 +1,6 @@
 ﻿using FolkTickets.Helpers;
 using FolkTickets.ViewModels;
+using Rg.Plugins.Popup.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,11 @@ namespace FolkTickets.Views
 	public partial class OrderPage : ContentPage
 	{
         private OrderViewModel ViewModel;
+        private OrderNotePage NotePage { get; set; }
+        public bool PopupVisible { get; set; } = false;
 		public OrderPage(OrderViewModel viewModel)
 		{
-			InitializeComponent ();
+			InitializeComponent();
 
             BindingContext = ViewModel = viewModel;
         }
@@ -42,12 +45,29 @@ namespace FolkTickets.Views
             {
                 await DisplayAlert(item.Title, item.Message, item.Cancel);
             });
+
+            MessagingCenter.Subscribe<OrderViewModel, MessagingCenterAlert>(this, "Note", async (sender, item) =>
+            {
+                PopupVisible = true;
+                NotePage = new OrderNotePage();
+                NotePage.Disappearing += NotePage_Disappearing;
+                await Navigation.PushPopupAsync(NotePage);
+            });
+        }
+
+        private void NotePage_Disappearing(object sender, EventArgs e)
+        {
+            if (NotePage != null && NotePage.SaveNote)
+            {
+                ViewModel.AddNoteClicked.Execute(NotePage.Note);
+            }
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
             MessagingCenter.Unsubscribe<OrderViewModel, MessagingCenterAlert>(this, "Error");
+            MessagingCenter.Unsubscribe<OrderViewModel, MessagingCenterAlert>(this, "Note");
         }
     }
 }

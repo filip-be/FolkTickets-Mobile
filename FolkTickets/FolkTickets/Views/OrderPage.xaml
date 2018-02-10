@@ -11,6 +11,7 @@
              Title="Order">
     <ContentPage.ToolbarItems>
         <iconize:IconToolbarItem Icon="fa-times" IconColor="White" Command="{Binding CloseClicked}"/>
+        <iconize:IconToolbarItem Icon="fa-file-text" IconColor="White" Command="{Binding AddNoteClicked}"/>
         <iconize:IconToolbarItem Icon="fa-info" IconColor="White" Command="{Binding InfoClicked}"/>
         <iconize:IconToolbarItem Icon="fa-check" IconColor="White" Command="{Binding UpdateClicked}"/>
     </ContentPage.ToolbarItems>
@@ -76,6 +77,7 @@
                                                            Text="{Binding Status, Mode=TwoWay, Converter={StaticResource TicketStatusToIconConverter}}" 
                                                            TextColor="{Binding Status, Converter={StaticResource TicketStatusToIconColorConverter}}" 
                                                            FontSize="Large" 
+                                                           HorizontalOptions="Start"
                                                            VerticalTextAlignment="Center"
                                                            HorizontalTextAlignment="Start"/>
                                         <Label Grid.Column="2" FontSize="Small" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start" Text="{Binding ProductName}"/>

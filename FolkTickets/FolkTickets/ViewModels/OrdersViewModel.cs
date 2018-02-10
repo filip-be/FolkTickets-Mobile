@@ -251,10 +251,6 @@ namespace FolkTickets.ViewModels
 
         public void DisplayBalFolkOrder(string key)
         {
-            if (IsBusy)
-                return;
-
-            IsBusy = true;
             try
             {
                 if (!(App.Current.MainPage is IconNavigationPage)
@@ -284,10 +280,6 @@ namespace FolkTickets.ViewModels
                     Message = string.Format("Could not load Bal Folk order: {0}", ex.Message),
                     Cancel = "OK"
                 });
-            }
-            finally
-            {
-                IsBusy = false;
             }
         }
     }

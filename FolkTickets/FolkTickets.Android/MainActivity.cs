@@ -3,18 +3,13 @@
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using FormsPlugin.Iconize.Droid;
 using Plugin.Iconize;
 using FormsPlugin.Iconize;
 using FolkTickets.Views;
 using Xamarin.Forms;
-using FolkTickets.Helpers;
 
 namespace FolkTickets.Droid
 {
@@ -52,7 +47,8 @@ namespace FolkTickets.Droid
                 Page selectedPage = tabbedPage?.CurrentPage;
                 if(selectedPage != null)
                 {
-                    if(selectedPage is OrderPage)
+                    if(selectedPage is OrderPage
+                        && !(selectedPage as OrderPage).PopupVisible)
                     {
                         (selectedPage as OrderPage).CloseClicked();
                         return;

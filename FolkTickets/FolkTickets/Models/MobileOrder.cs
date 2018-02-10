@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using System.Text;
 using WooCommerceNET.WooCommerce.v2;
+using System.Linq;
 
 namespace FolkTickets.Models
 {
@@ -74,6 +75,40 @@ namespace FolkTickets.Models
                 }
                 return color;
             }
+        }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public MobileOrder()
+        {
+        }
+
+        /// <summary>
+        /// Create MobileOrder from bftOrder
+        /// </summary>
+        /// <param name="bftOrder">BFT order object</param>
+        public MobileOrder(BFTOrder bftOrder)
+        {
+            OrderId = bftOrder.OrderId;
+            Status = bftOrder.Status;
+            CustomerName = bftOrder.OrderBillingName;
+            CustomerMail = bftOrder.OrderBillingEmail;
+            CustomerPhone = bftOrder.OrderBillingPhone;
+            OrderKey = bftOrder.OrderKey;
+            CustomerNote = bftOrder.OrderCustomerNote;
+            Type = bftOrder.Type;
+            OrderNotes = bftOrder.OrderNotes;
+            Tickets = bftOrder.Tickets?.Select(t => new MobileTicket()
+            {
+                ID = t.ID,
+                TicketID = t.TicketID,
+                OrderID = t.OrderID,
+                OrderItemID = t.OrderItemID,
+                Hash = t.Hash,
+                Timestamp = t.Timestamp,
+                Status = t.Status,
+            }).ToList();
         }
     }
 }

@@ -169,28 +169,7 @@ namespace FolkTickets.Services
                 List<BFTOrder> orders = await api.BFTOrder.GetAll();
 
                 // Return orders
-                return orders.Select(o => new MobileOrder()
-                {
-                    OrderId = o.OrderId,
-                    Status = o.Status,
-                    CustomerName = o.OrderBillingName,
-                    CustomerMail = o.OrderBillingEmail,
-                    CustomerPhone = o.OrderBillingPhone,
-                    OrderKey = o.OrderKey,
-                    CustomerNote = o.OrderCustomerNote,
-                    OrderNotes = o.OrderNotes,
-                    Tickets = o.Tickets?.Select(t => new MobileTicket()
-                    {
-                        ID = t.ID,
-                        TicketID = t.TicketID,
-                        OrderID = t.OrderID,
-                        OrderItemID = t.OrderItemID,
-                        Hash = t.Hash,
-                        Timestamp = t.Timestamp,
-                        Status = t.Status,
-                    }).ToList(),
-                });
-                
+                return orders.Select(o => new MobileOrder(o));
             }
             catch (Exception ex)
             {
@@ -214,27 +193,7 @@ namespace FolkTickets.Services
 
                 WCObject api = GetWCApiObject(null);
                 BFTOrder bftOrder = await api.BFTOrder.Get(key);
-                MobileOrder order = new MobileOrder()
-                {
-                    OrderId = bftOrder.OrderId,
-                    Status = bftOrder.Status,
-                    CustomerName = bftOrder.OrderBillingName,
-                    CustomerMail = bftOrder.OrderBillingEmail,
-                    CustomerPhone = bftOrder.OrderBillingPhone,
-                    OrderKey = bftOrder.OrderKey,
-                    CustomerNote = bftOrder.OrderCustomerNote,
-                    OrderNotes = bftOrder.OrderNotes,
-                    Tickets = bftOrder.Tickets?.Select(t => new MobileTicket()
-                    {
-                        ID = t.ID,
-                        TicketID = t.TicketID,
-                        OrderID = t.OrderID,
-                        OrderItemID = t.OrderItemID,
-                        Hash = t.Hash,
-                        Timestamp = t.Timestamp,
-                        Status = t.Status,
-                    }).ToList(),
-                };
+                MobileOrder order = new MobileOrder(bftOrder);
                 
                 foreach(var ticket in order.Tickets)
                 {
@@ -269,6 +228,91 @@ namespace FolkTickets.Services
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Add order note
+        /// </summary>
+        /// <param name="orderId">Order ID</param>
+        /// <param name="note">Note string</param>
+        /// <returns>bool</returns>
+        public static async Task<bool> AddOrderNote(int orderId, string note)
+        {
+            string result = string.Empty;
+
+            OrderNote orderNote = new OrderNote
+            {
+                customer_note = false,
+                note = note,
+            };
+
+            WCObject api = GetWCApiObject(null);
+
+            OrderNote returnNote = await api.Order.Notes.Add(orderNote, orderId);
+            if(returnNote != null && note.Equals(returnNote.note))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Update BFT order
+        /// </summary>
+        /// <param name="order">Order object</param>
+        /// <returns>error message or empty string if success</returns>
+        public static async Task<string> UpdateOrder(MobileOrder order)
+        {
+            string error = string.Empty;
+
+            try
+            {
+                if(order?.Tickets == null)
+                {
+                    return "Order doesn't contain any tickets";
+                }
+
+                List<MobileTicket> tickets = order.Tickets.ToArray().ToList();
+                tickets.RemoveAll(t => !t.Edited);
+                
+                if (!tickets.Any())
+                {
+                    return $"No tickets has been modified";
+                }
+                
+                BFTOrder tempOrder = new BFTOrder
+                {
+                    OrderId = order.OrderId,
+                    Tickets = tickets.Select(t => new BFTOrderTicket
+                    {
+                        ID = t.ID,
+                        OrderID = t.OrderID,
+                        OrderItemID = t.OrderItemID,
+                        TicketID = t.TicketID,
+                        Hash = t.Hash,
+                        Status = t.Status,
+                        Timestamp = t.Timestamp
+                    }).ToList()
+                };
+                
+                WCObject api = GetWCApiObject(null);
+                BFTOrder updatedOrder = await api.BFTOrder.Update((int)tempOrder.OrderId, tempOrder);
+                if(updatedOrder == null)
+                {
+                    return "Could not update order - return message is null";
+                }
+                if(!string.IsNullOrEmpty(updatedOrder.OrderCustomerNote))
+                {
+                    return $"Error updating order: {updatedOrder.OrderCustomerNote}";
+                }
+            }
+            catch (Exception ex)
+            {
+                error = $"Error updating order: {ex.Message}";
+            }
+
+            return error;
         }
     }
 }
