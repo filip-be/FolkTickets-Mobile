@@ -200,7 +200,6 @@ namespace FolkTickets.ViewModels
                 {
                     SearchText = result?.Text;
                     MessagingCenter.Send(this, "ScanCompleted", result);
-                    FindOrder();
                 };
 
                 MessagingCenter.Send(this, "DisplayScanPage", scanPage);
@@ -224,9 +223,14 @@ namespace FolkTickets.ViewModels
         /// <summary>
         /// Find specific order
         /// </summary>
-        private void FindOrder()
+        private void FindOrder(object param)
         {
-            if (IsBusy)
+            bool force = false;
+            if (param is bool)
+            {
+                force = (bool)param;
+            }
+            if (IsBusy && !force)
                 return;
 
             IsBusy = true;

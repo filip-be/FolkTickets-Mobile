@@ -43,7 +43,7 @@ namespace FolkTickets.Views
             {
                 await Navigation.PopModalAsync();
                 Scanning = false;
-                Device.BeginInvokeOnMainThread(() => ViewModel.SearchCommand.Execute(null));
+                Device.BeginInvokeOnMainThread(() => ViewModel.SearchCommand.Execute(true));
             });
         }
 
