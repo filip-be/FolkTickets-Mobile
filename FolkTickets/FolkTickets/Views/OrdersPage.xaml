@@ -10,23 +10,28 @@
              Title="Orders">
     <ContentPage.ToolbarItems>
         <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="{Binding ScanClicked}"/>
+        <iconize:IconToolbarItem Icon="fa-refresh" IconColor="White" Command="{Binding LoadAllOrdersCommand}"/>
         <iconize:IconToolbarItem Icon="fa-sign-out" IconColor="White" Command="{Binding SignOutCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid>
             <ScrollView IsVisible="{Binding IsControlsVisible}">
                 <StackLayout>
-                    <SearchBar Placeholder="Search order" Text="{Binding SearchText, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}"/>
                     <ListView ItemsSource="{Binding Items}"
                               ItemTapped="Handle_ItemTapped"
                               CachingStrategy="RecycleElement"
                               HasUnevenRows="True">
+                        <ListView.Header>
+                            <StackLayout>
+                                <SearchBar Placeholder="Search order" Text="{Binding SearchText, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}" HeightRequest="40"/>
+                            </StackLayout>
+                        </ListView.Header>
                         <!--Built in Cells-->
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <fc:OrderCell 
-                                    OrderId="{Binding Path=OrderId}"
-                                    OrderStatus="{Binding Path=Status}"
+                                    OrderId="{Binding OrderId}"
+                                    OrderStatus="{Binding StatusChecked}"
                                     CustomerName="{Binding CustomerName}"
                                     TextColor="{StaticResource Key=Accent}"
                                     DetailColor="{StaticResource Key=LightTextColor}"/>

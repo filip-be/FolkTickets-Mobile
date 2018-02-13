@@ -4,10 +4,11 @@ using Xamarin.Forms;
 using System.Text;
 using WooCommerceNET.WooCommerce.v2;
 using System.Linq;
+using FolkTickets.Helpers;
 
 namespace FolkTickets.Models
 {
-    public class MobileOrder
+    public class MobileOrder : ObservableObject
     {
         /// <summary>
         /// Order ID
@@ -60,6 +61,10 @@ namespace FolkTickets.Models
         /// </summary>
         public List<BFTOrderNote> OrderNotes { get; set; }
         /// <summary>
+        /// Allow edit already checked tickets
+        /// </summary>
+        public bool AllowEditAll { get; set; }
+        /// <summary>
         /// Status color for UI
         /// </summary>
         public Color StatusColor
@@ -74,6 +79,23 @@ namespace FolkTickets.Models
                         break;
                 }
                 return color;
+            }
+        }
+        /// <summary>
+        /// Order status - can be checked
+        /// </summary>
+        public string StatusChecked
+        {
+            get
+            {
+                if(string.IsNullOrEmpty(Status) 
+                    || !Status.Equals("completed")
+                    || Tickets == null
+                    || Tickets.Any(t => t.Status == 1))
+                {
+                    return Status;
+                }
+                return "checked-all";
             }
         }
 

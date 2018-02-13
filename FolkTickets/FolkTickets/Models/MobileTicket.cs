@@ -73,31 +73,13 @@ namespace FolkTickets.Models
         /// </summary>
         public string ProductShortDescription { get; set; }
         /// <summary>
-        /// Status color for UI
-        /// </summary>
-        public Color StatusColor
-        {
-            get
-            {
-                if(Edited)
-                {
-                    return Color.YellowGreen;
-                }
-                if(Status == 1)
-                {
-                    return Color.Default;
-                }
-                return Color.LightGray;
-            }
-        }
-        /// <summary>
         /// Ticket edited info
         /// </summary>
         public bool Edited { get; set; } = false;
         /// <summary>
-        /// Allow edit already checked tickets
+        /// Is ticket editable - private member
         /// </summary>
-        public bool AllowEditChecked { get; set; } = false;
+        private bool _isEditable = true;
         /// <summary>
         /// Is ticket editable
         /// </summary>
@@ -105,9 +87,12 @@ namespace FolkTickets.Models
         {
             get
             {
-                return AllowEditChecked || Status == 1 || Edited;
+                return _isEditable;
+            }
+            set
+            {
+                SetProperty(ref _isEditable, value);
             }
         }
-
     }
 }

@@ -12,12 +12,16 @@ namespace FolkTickets.Controls
         public static Color BackgroundColorFailed { get; set; } = Color.LightPink;
         public static Color BackgroundColorOnHold { get; set; } = Color.FromHex("#C0C0C0");
         public static Color BackgroundColorUndefined { get; set; } = Color.LightPink;
+        public static Color BackgroundColorAllChecked { get; set; } = Color.PowderBlue;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Color bgColor = BackgroundgColorDefault;
             switch (value as string)
             {
+                case "checked-all":
+                    bgColor = BackgroundColorAllChecked;
+                    break;
                 case "pending":
                 case "processing":
                 case "onhold":

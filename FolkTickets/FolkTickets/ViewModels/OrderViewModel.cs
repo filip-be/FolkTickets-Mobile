@@ -26,11 +26,27 @@ namespace FolkTickets.ViewModels
                 SetProperty(ref _Order, value);
             }
         }
+        private bool _partialOrder = true;
+        public bool PartialOrder
+        {
+            get
+            {
+                return _partialOrder;
+            }
+            set
+            {
+                SetProperty(ref _partialOrder, value);
+            }
+        }
+
         public ICommand CloseClicked { get; protected set; }
         public ICommand UpdateClicked { get; protected set; }
         public ICommand InfoClicked { get; protected set; }
         public ICommand TicketClicked { get; protected set; }
         public ICommand AddNoteClicked { get; protected set; }
+        public ICommand AllowEditAllClicked { get; protected set; }
+        public ICommand LoadFullOrderClicked { get; protected set; }
+        public ICommand RefreshClicked { get; protected set; }
 
         public OrderViewModel(string key) : base()
         {
@@ -41,8 +57,77 @@ namespace FolkTickets.ViewModels
             InfoClicked = new Command(ShowInfo);
             TicketClicked = new Command(CheckTicket);
             AddNoteClicked = new Command(AddNote);
+            AllowEditAllClicked = new Command(AllowEditAll);
+            LoadFullOrderClicked = new Command(LoadFullOrder);
+            RefreshClicked = new Command(Refresh);
 
+            Order = new MobileOrder();
             Initialize(key);
+        }
+
+        private async void Refresh(object obj)
+        {
+            if (Order?.OrderId == null)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = "Order ID is empty",
+                    Cancel = "OK"
+                });
+                return;
+            }
+            await Initialize(Order.OrderKey);
+        }
+
+        private async void LoadFullOrder(object obj)
+        {
+            if (Order?.OrderId == null)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = "Order ID is empty",
+                    Cancel = "OK"
+                });
+                return;
+            }
+            await Initialize(Order.OrderId.ToString());
+        }
+
+        private void AllowEditAll(object obj)
+        {
+            if (Order?.OrderId == null)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = "Order ID is empty",
+                    Cancel = "OK"
+                });
+                return;
+            }
+            
+            Order.AllowEditAll = !Order.AllowEditAll;
+
+            if (Order.Tickets != null)
+            {
+                if (Order.AllowEditAll == true)
+                {
+                    Order.Tickets.ForEach(t => t.IsEditable = true);
+                }
+                else
+                {
+                    Order.Tickets.ForEach(t => 
+                        {
+                            if (!t.Edited
+                                && t.Status == 2)
+                            {
+                                t.IsEditable = false;
+                            }
+                        });
+                }
+            }
         }
 
         private async void AddNote(object obj)
@@ -61,7 +146,7 @@ namespace FolkTickets.ViewModels
             if (string.IsNullOrEmpty(obj as string))
             {
                 // Do not add note twice
-                if(IsBusy)
+                if (IsBusy)
                 {
                     return;
                 }
@@ -90,7 +175,7 @@ namespace FolkTickets.ViewModels
                     Cancel = "OK",
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
@@ -109,7 +194,7 @@ namespace FolkTickets.ViewModels
         {
             try
             {
-                if(obj == null || !(obj is MobileTicket))
+                if (obj == null || !(obj is MobileTicket))
                 {
                     MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                     {
@@ -120,12 +205,12 @@ namespace FolkTickets.ViewModels
                     return;
                 }
                 MobileTicket ticket = obj as MobileTicket;
-                if(!ticket.IsEditable)
+                if (!ticket.IsEditable)
                 {
                     return;
                 }
                 ticket.Edited = true;
-                switch(ticket.Status)
+                switch (ticket.Status)
                 {
                     case 1:
                         ticket.Status = 2;
@@ -146,7 +231,7 @@ namespace FolkTickets.ViewModels
                 Order = null;
                 Order = tempOrder;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
@@ -159,7 +244,7 @@ namespace FolkTickets.ViewModels
 
         private void ShowInfo(object obj)
         {
-            if(Order == null)
+            if (Order == null)
             {
                 MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
@@ -175,7 +260,7 @@ namespace FolkTickets.ViewModels
                 Order.CustomerName,
                 Order.CustomerMail,
                 Order.CustomerPhone,
-                string.Join(Environment.NewLine, Order.OrderNotes.Select(n => $"{n.date_created.date.TrimEnd(new char[] { '0'})} ({n.added_by}):{Environment.NewLine}{n.content}")));
+                string.Join(Environment.NewLine, Order.OrderNotes.Select(n => $"{n.date_created.date.TrimEnd(new char[] { '0' })} ({n.added_by}):{Environment.NewLine}{n.content}")));
 
             MessagingCenter.Send(this, "Error", new MessagingCenterAlert
             {
@@ -191,6 +276,14 @@ namespace FolkTickets.ViewModels
             try
             {
                 Order = await WCService.GetBFTOrder(key);
+                PartialOrder = "Partial".Equals(Order?.Type, StringComparison.OrdinalIgnoreCase);
+                if(Order?.Tickets != null)
+                {
+                    Order.Tickets.ForEach(t =>
+                    {
+                        t.IsEditable = t.Status == 1;
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -266,7 +359,7 @@ namespace FolkTickets.ViewModels
                     Message = success ? "Order has been updated successfully" : $"Update failed: {error}",
                     Cancel = "OK"
                 });
-                if(success)
+                if (success)
                 {
                     await Initialize(Order.OrderKey);
                 }

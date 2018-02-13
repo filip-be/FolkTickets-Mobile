@@ -9,19 +9,22 @@
              xmlns:vm="clr-namespace:FolkTickets.ViewModels"
              xmlns:fc="clr-namespace:FolkTickets.Controls"
              Title="Order">
-    <ContentPage.ToolbarItems>
-        <iconize:IconToolbarItem Icon="fa-times" IconColor="White" Command="{Binding CloseClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-file-text" IconColor="White" Command="{Binding AddNoteClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-info" IconColor="White" Command="{Binding InfoClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-check" IconColor="White" Command="{Binding UpdateClicked}"/>
-    </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>
             <fc:StatusToColorConverter x:Key="StatusToColorConverter"/>
             <fc:TicketStatusToIconConverter x:Key="TicketStatusToIconConverter"/>
             <fc:TicketStatusToIconColorConverter x:Key="TicketStatusToIconColorConverter"/>
+            <fc:TicketEditableBGColorConverter x:Key="TicketEditableBGColorConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <iconize:IconToolbarItem Icon="fa-times" IconColor="White" Command="{Binding CloseClicked}"/>
+        <iconize:IconToolbarItem Icon="fa-lock" IconColor="White" Command="{Binding AllowEditAllClicked}"/>
+        <iconize:IconToolbarItem Icon="fa-file-text" IconColor="White" Command="{Binding AddNoteClicked}"/>
+        <iconize:IconToolbarItem Icon="fa-info" IconColor="White" Command="{Binding InfoClicked}"/>
+        <iconize:IconToolbarItem Icon="fa-refresh" IconColor="White" Command="{Binding RefreshClicked}"/>
+        <iconize:IconToolbarItem Icon="fa-check" IconColor="White" Command="{Binding UpdateClicked}"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid>
             <ScrollView IsVisible="{Binding IsControlsVisible}">
@@ -68,7 +71,7 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <Grid BackgroundColor="{Binding StatusColor}" IsEnabled="{Binding IsEditable}" Padding="0" Margin="5">
+                                    <Grid BackgroundColor="{Binding IsEditable, Mode=TwoWay, Converter={StaticResource TicketEditableBGColorConverter}}" IsEnabled="{Binding IsEditable}" Padding="0" Margin="5">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="auto"/>
@@ -85,6 +88,12 @@
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
+                        <ListView.Footer>
+                            <StackLayout>
+                                <Button Text="Display full order" IsVisible="{Binding PartialOrder, Mode=TwoWay}" Command="{Binding LoadFullOrderClicked}" />
+                            </StackLayout>
+                        </ListView.Footer>
+                            
                     </ListView>
                 </StackLayout>
             </ScrollView>
