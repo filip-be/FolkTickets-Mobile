@@ -20,12 +20,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\MobileOrder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MobileTicket.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\OrderCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Statistic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\WCService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TicketStatusToIconConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\OrderViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\OrdersViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\StatsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\OrderNotePage.xaml.cs">
       <DependentUpon>OrderNotePage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -39,6 +41,10 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\OrdersPage.xaml.cs">
       <DependentUpon>OrdersPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\StatsPage.xaml.cs">
+      <DependentUpon>StatsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -66,6 +72,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\OrderNotePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\StatsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

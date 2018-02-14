@@ -41,6 +41,10 @@ namespace FolkTickets.ViewModels
         /// </summary>
         public ICommand SearchCommand { get; protected set; }
         /// <summary>
+        /// Show statistics command
+        /// </summary>
+        public ICommand ShowStatsCommand { get; protected set; }
+        /// <summary>
         /// Private variable - search value
         /// </summary>
         private string _SearchText = string.Empty;
@@ -88,6 +92,7 @@ namespace FolkTickets.ViewModels
             ScanClicked = new Command(ScanQR);
             SearchCommand = new Command(FindOrder);
             LoadAllOrdersCommand = new Command(LoadAllOrders);
+            ShowStatsCommand = new Command(ShowStats);
             PropertyChanged += OnSearchTextChanged;
         }
 
@@ -137,6 +142,38 @@ namespace FolkTickets.ViewModels
                         Cancel = "OK"
                     });
                 }
+            }
+        }
+
+        private void ShowStats()
+        {
+            try
+            {
+                if (!(App.Current.MainPage is IconNavigationPage)
+                        || !((App.Current.MainPage as IconNavigationPage)?.CurrentPage is IconTabbedPage))
+                {
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = "Logged succesfully, but there are invalid application pages. Cannot proceed!",
+                        Cancel = "OK"
+                    });
+                    return;
+                }
+                IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
+                
+                var newPage = new StatsPage();
+                tabbedPage.Children.Add(newPage);
+                tabbedPage.SelectedItem = newPage;
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = string.Format("Could not load Bal Folk stats: {0}", ex.Message),
+                    Cancel = "OK"
+                });
             }
         }
 

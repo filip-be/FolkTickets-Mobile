@@ -244,7 +244,7 @@ namespace FolkTickets.ViewModels
 
         private void ShowInfo(object obj)
         {
-            if (Order == null)
+            if (Order?.OrderId == null)
             {
                 MessagingCenter.Send(this, "Error", new MessagingCenterAlert
                 {
@@ -255,12 +255,21 @@ namespace FolkTickets.ViewModels
                 return;
             }
 
-            string orderDetails = string.Format("{1}{0}{2}{0}{3}{0}{0}Order messages:{0}{4}",
-                Environment.NewLine,
-                Order.CustomerName,
-                Order.CustomerMail,
-                Order.CustomerPhone,
-                string.Join(Environment.NewLine, Order.OrderNotes.Select(n => $"{n.date_created.date.TrimEnd(new char[] { '0' })} ({n.added_by}):{Environment.NewLine}{n.content}")));
+            string orderDetails = string.Empty;
+			
+			if(Order.OrderNotes != null)
+			{
+				orderDetails = string.Format("{1}{0}{2}{0}{3}{0}{0}Order messages:{0}{4}",
+					Environment.NewLine,
+					Order.CustomerName,
+					Order.CustomerMail,
+					Order.CustomerPhone,
+					string.Join(Environment.NewLine, Order.OrderNotes.Select(n => $"{n.date_created.date.TrimEnd(new char[] { '0' })} ({n.added_by}):{Environment.NewLine}{n.content}")));
+			}
+			else
+			{
+				orderDetails = "There is no order notes";
+			}
 
             MessagingCenter.Send(this, "Error", new MessagingCenterAlert
             {

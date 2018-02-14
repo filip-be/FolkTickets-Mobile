@@ -11,6 +11,7 @@
     <ContentPage.ToolbarItems>
         <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="{Binding ScanClicked}"/>
         <iconize:IconToolbarItem Icon="fa-refresh" IconColor="White" Command="{Binding LoadAllOrdersCommand}"/>
+        <iconize:IconToolbarItem Icon="fa-pie-chart" IconColor="White" Command="{Binding ShowStatsCommand}"/>
         <iconize:IconToolbarItem Icon="fa-sign-out" IconColor="White" Command="{Binding SignOutCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>

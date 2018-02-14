@@ -177,6 +177,25 @@ namespace FolkTickets.Services
             }
         }
 
+        public static async Task<IEnumerable<Statistic>> GetStatistics()
+        {
+            try
+            {
+                // Initialize connection object
+                WCObject api = GetWCApiObject(null);
+
+                // Return statistics
+                var statistics = await api.BFTStatistic.GetAll();
+
+                // Copy array
+                return statistics.Select(s => new Statistic(s));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Get BFT orders with tickets
         /// </summary>
