@@ -119,12 +119,12 @@ namespace FolkTickets.ViewModels
                     IEnumerable<MobileOrder> limitedOrders = Orders
                         .Where(o =>
                             o.OrderId.ToString().StartsWith(SearchText)
-                            || o.CustomerName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                            || o.CustomerNote.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                            || o.CustomerPhone.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                            || o.CustomerMail.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                            || o.OrderKey.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                            || (o.Tickets != null && o.Tickets.Where(t => t.Hash.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1).Any())
+                            || o.CustomerName.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
+                            || o.CustomerNote.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
+                            || o.CustomerPhone.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
+                            || o.CustomerMail.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
+                            || o.OrderKey.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
+                            || (o.Tickets != null && o.Tickets.Where(t => t.Hash.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1).Any())
                             );
 
                     Items.Clear();
