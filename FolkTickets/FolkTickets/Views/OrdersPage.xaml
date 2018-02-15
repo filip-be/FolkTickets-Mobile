@@ -16,36 +16,33 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid>
-            <ScrollView IsVisible="{Binding IsControlsVisible}">
-                <StackLayout>
-                    <ListView ItemsSource="{Binding Items}"
-                              ItemTapped="Handle_ItemTapped"
-                              CachingStrategy="RecycleElement"
-                              HasUnevenRows="True">
-                        <ListView.Header>
-                            <StackLayout>
-                                <SearchBar Placeholder="Search order" Text="{Binding SearchText, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}" HeightRequest="40"/>
-                            </StackLayout>
-                        </ListView.Header>
-                        <!--Built in Cells-->
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <fc:OrderCell 
-                                    OrderId="{Binding OrderId}"
-                                    OrderStatus="{Binding StatusChecked}"
-                                    CustomerName="{Binding CustomerName}"
-                                    TextColor="{StaticResource Key=Accent}"
-                                    DetailColor="{StaticResource Key=LightTextColor}"/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.Footer>
-                            <StackLayout>
-                                <Button x:Name="LoadAllButton" IsVisible="True" Text="{Binding LoadAllOrdersText}" Command="{Binding LoadAllOrdersCommand}" />
-                            </StackLayout>
-                        </ListView.Footer>
-                    </ListView>
-                </StackLayout>
-            </ScrollView>
+            <ListView ItemsSource="{Binding Items}"
+                        ItemTapped="Handle_ItemTapped"
+                        CachingStrategy="RecycleElement"
+                        HasUnevenRows="True"
+                        IsVisible="{Binding IsControlsVisible}">
+                <ListView.Header>
+                    <StackLayout>
+                        <SearchBar Placeholder="Search order" Text="{Binding SearchText, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}" HeightRequest="40"/>
+                    </StackLayout>
+                </ListView.Header>
+                <!--Built in Cells-->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <fc:OrderCell 
+                            OrderId="{Binding OrderId}"
+                            OrderStatus="{Binding StatusChecked}"
+                            CustomerName="{Binding CustomerName}"
+                            TextColor="{StaticResource Key=Accent}"
+                            DetailColor="{StaticResource Key=LightTextColor}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Footer>
+                    <StackLayout>
+                        <Button x:Name="LoadAllButton" IsVisible="True" Text="{Binding LoadAllOrdersText}" Command="{Binding LoadAllOrdersCommand}" />
+                    </StackLayout>
+                </ListView.Footer>
+            </ListView>
             <ActivityIndicator
                 HorizontalOptions="CenterAndExpand" 
                 VerticalOptions="CenterAndExpand" 

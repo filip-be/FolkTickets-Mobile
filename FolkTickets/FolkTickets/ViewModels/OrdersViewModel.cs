@@ -118,13 +118,13 @@ namespace FolkTickets.ViewModels
                     }
                     IEnumerable<MobileOrder> limitedOrders = Orders
                         .Where(o =>
-                            o.OrderId.ToString().StartsWith(SearchText)
+                            o.OrderId.ToString().Equals(SearchText, StringComparison.InvariantCultureIgnoreCase)
                             || o.CustomerName.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
                             || o.CustomerNote.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
                             || o.CustomerPhone.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
                             || o.CustomerMail.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
-                            || o.OrderKey.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
-                            || (o.Tickets != null && o.Tickets.Where(t => t.Hash.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1).Any())
+                            || o.OrderKey.Equals(SearchText, StringComparison.InvariantCultureIgnoreCase)
+                            || (o.Tickets != null && o.Tickets.Where(t => t.Hash.Equals(SearchText, StringComparison.InvariantCultureIgnoreCase)).Any())
                             );
 
                     Items.Clear();

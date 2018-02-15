@@ -66,5 +66,11 @@ namespace FolkTickets.Views
             base.OnDisappearing();
             MessagingCenter.Unsubscribe<LoginViewModel, MessagingCenterAlert>(this, "Error");
         }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            
+        }
     }
 }
