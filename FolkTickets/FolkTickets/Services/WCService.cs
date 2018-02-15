@@ -190,7 +190,7 @@ namespace FolkTickets.Services
                 // Copy array
                 return statistics.Select(s => new Statistic(s));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

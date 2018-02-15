@@ -6,6 +6,7 @@ using WooCommerceNET.WooCommerce.v2;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace WooCommerceNET.Test
 {
@@ -94,6 +95,19 @@ namespace WooCommerceNET.Test
             Assert.IsNotNull(bftOrder2);
             Assert.AreEqual(bftOrder, bftOrder2);
             Trace.Write("Completed, result was equal!");
+        }
+
+        [TestMethod]
+        public void CompareStrings()
+        {
+            CompareInfo ci = new CultureInfo("en-US").CompareInfo;
+            CompareOptions co = CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace;
+            string source = "Zażółć Michała jaźń";
+            string search = "michal";
+
+            int position = ci.IndexOf(source, search, co);
+            Assert.IsTrue(position >= 0, $"Could not find '{search}' in '{source}'");
+
         }
     }
 }

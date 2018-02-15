@@ -14,6 +14,7 @@ using FolkTickets.Models;
 using FormsPlugin.Iconize;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace FolkTickets.ViewModels
 {
@@ -116,15 +117,18 @@ namespace FolkTickets.ViewModels
                         }
                         return;
                     }
+                    CompareInfo ci = new CultureInfo("en-US").CompareInfo;
+                    CompareOptions co = CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace;
+                    
                     IEnumerable<MobileOrder> limitedOrders = Orders
                         .Where(o =>
-                            o.OrderId.ToString().Equals(SearchText, StringComparison.InvariantCultureIgnoreCase)
-                            || o.CustomerName.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
-                            || o.CustomerNote.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
-                            || o.CustomerPhone.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
-                            || o.CustomerMail.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1
-                            || o.OrderKey.Equals(SearchText, StringComparison.InvariantCultureIgnoreCase)
-                            || (o.Tickets != null && o.Tickets.Where(t => t.Hash.Equals(SearchText, StringComparison.InvariantCultureIgnoreCase)).Any())
+                            ci.IndexOf(o.OrderId.ToString(), SearchText, co) != -1
+                            || ci.IndexOf(o.CustomerName, SearchText, co) != -1
+                            || ci.IndexOf(o.CustomerNote, SearchText, co) != -1
+                            || ci.IndexOf(o.CustomerPhone, SearchText, co) != -1
+                            || ci.IndexOf(o.CustomerMail, SearchText, co) != -1
+                            || ci.IndexOf(o.OrderKey, SearchText, co) != -1
+                            || (o.Tickets != null && o.Tickets.Where(t => ci.IndexOf(t.Hash, SearchText, co) != -1).Any())
                             );
 
                     Items.Clear();
