@@ -1,11 +1,15 @@
 ﻿using FolkTickets.Helpers;
 using FolkTickets.Services;
 using FolkTickets.Views;
-using FormsPlugin.Iconize;
+using Newtonsoft.Json;
+using Plugin.FilePicker;
+using Plugin.Iconize;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -25,6 +29,12 @@ namespace FolkTickets.ViewModels
         /// Login clicked command
         /// </summary>
         public ICommand LoginClicked { get; protected set; }
+
+        /// <summary>
+        /// Import button clicked
+        /// </summary>
+        public ICommand ImportClicked { get; protected set; }
+
         /// <summary>
         /// Private: WP URI
         /// </summary>
@@ -130,6 +140,9 @@ namespace FolkTickets.ViewModels
             // Login clicked command
             LoginClicked = new Command<bool>(Login);
 
+            // Import button clicked
+            ImportClicked = new Command(ImportSettings);
+
             // Load languages
             IsBusy = true;
             Languages = CultureInfo
@@ -139,7 +152,7 @@ namespace FolkTickets.ViewModels
             string currentLang = null;
 
             // Assign user account variables
-            Account userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
+            Account userAccount = AccountStore.Create(Android.App.Application.Context).FindAccountsForService(App.AppName).FirstOrDefault();
             if(userAccount != null)
             {
                 PageUri = userAccount.Username;
@@ -173,6 +186,61 @@ namespace FolkTickets.ViewModels
         }
 
         /// <summary>
+        /// Import settings from JSON file
+        /// </summary>
+        private async void ImportSettings()
+        {
+            // Do not execute twice
+            if (IsBusy)
+                return;
+
+            try
+            {
+                var file = await CrossFilePicker.Current.PickFile();
+                if(file != null)
+                {
+                    using (var jsonReader = new JsonTextReader(new StreamReader(file.GetStream())))
+                    {
+                        var serializer = new JsonSerializer();
+                        SettingsFile settings = serializer.Deserialize<SettingsFile>(jsonReader);
+                        if(settings == null)
+                        {
+                            // Error importing settings
+                            MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                            {
+                                Title = "Error",
+                                Message = "Unknown error reading settings file",
+                                Cancel = "OK"
+                            });
+                            return;
+                        }
+
+                        PageUri = settings.Uri;
+                        UseSSL = settings.UseSsl;
+                        ApiKey = settings.ApiKey;
+                        ApiSecret = settings.ApiSecret;
+                        Language = Languages.FirstOrDefault(l => l.Name.Equals(settings.Language));
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                // Error importing settings
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = $"Error importing file: {ex.Message}",
+                    Cancel = "OK"
+                });
+                return;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        /// <summary>
         /// Login to the WC
         /// </summary>
         /// <param name="page">View</param>
@@ -190,7 +258,7 @@ namespace FolkTickets.ViewModels
             try
             {
                 // Get user account from app store
-                userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
+                userAccount = AccountStore.Create(Android.App.Application.Context).FindAccountsForService(App.AppName).FirstOrDefault();
                 // Get user input only if requested
                 if (useUserInput)
                 {
@@ -247,14 +315,14 @@ namespace FolkTickets.ViewModels
                 if (connectionSucceeded)
                 {
                     // Remove all previously existing accounts
-                    AccountStore accountStore = AccountStore.Create(Forms.Context);
+                    AccountStore accountStore = AccountStore.Create(Android.App.Application.Context);
                     foreach (var account in accountStore.FindAccountsForService(App.AppName))
                     {
                         accountStore.Delete(account, App.AppName);
                     }
 
                     // Save credentials if the connection succeeded
-                    AccountStore.Create(Forms.Context).Save(userAccount, App.AppName);
+                    AccountStore.Create(Android.App.Application.Context).Save(userAccount, App.AppName);
 
                     // Check displayed page
                     if (!(App.Current.MainPage is IconNavigationPage)

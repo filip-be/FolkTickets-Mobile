@@ -12,17 +12,23 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\BooleanToIconConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\StatusToColorConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\StringFormatLabel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\TextValue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TicketEditableBGColorConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TicketStatusToIconColorConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MessagingCenterAlert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObservableObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\MobileTicketSetting.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SettingsFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MobileOrder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MobileTicket.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\OrderCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Statistic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\WCService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TicketStatusToIconConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\OrdersSettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\OrderViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
@@ -41,6 +47,10 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\OrdersPage.xaml.cs">
       <DependentUpon>OrdersPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\OrdersSettingsPage.xaml.cs">
+      <DependentUpon>OrdersSettingsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\StatsPage.xaml.cs">
@@ -80,6 +90,11 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\StatsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\OrdersSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

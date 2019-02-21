@@ -1,18 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
-             xmlns:xfProxy="clr-namespace:Xamarin.Forms.Proxy;assembly=Xamarin.Forms.Core.UnitTests"
-             xmlns:local="clr-namespace:FolkTickets"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
              x:Class="FolkTickets.Views.OrdersPage"
-             xmlns:vm="clr-namespace:FolkTickets.ViewModels"
              xmlns:fc="clr-namespace:FolkTickets.Controls"
              Title="Orders">
     <ContentPage.ToolbarItems>
-        <iconize:IconToolbarItem Icon="fa-qrcode" IconColor="White" Command="{Binding ScanClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-refresh" IconColor="White" Command="{Binding LoadAllOrdersCommand}"/>
-        <iconize:IconToolbarItem Icon="fa-pie-chart" IconColor="White" Command="{Binding ShowStatsCommand}"/>
-        <iconize:IconToolbarItem Icon="fa-sign-out" IconColor="White" Command="{Binding SignOutCommand}"/>
+        <iconize:IconToolbarItem Icon="fas-qrcode" IconColor="White" Command="{Binding ScanClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-sync-alt" IconColor="White" Command="{Binding LoadAllOrdersCommand}"/>
+        <iconize:IconToolbarItem Icon="fas-chart-pie" IconColor="White" Command="{Binding ShowStatsCommand}"/>
+        <iconize:IconToolbarItem Icon="fas-wrench" IconColor="White" Command="{Binding SettingsCommand}"/>
+        <iconize:IconToolbarItem Icon="fas-sign-out-alt" IconColor="White" Command="{Binding SignOutCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid>

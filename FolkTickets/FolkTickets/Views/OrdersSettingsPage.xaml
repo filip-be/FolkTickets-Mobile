@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FolkTickets.Views.OrdersSettingsPage"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:controls="clr-namespace:FolkTickets.Controls"
+             xmlns:fc="clr-namespace:FolkTickets.Controls"
+             Title="Settings">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <fc:BooleanToIconConverter x:Key="BooleanToIconConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <iconize:IconToolbarItem Icon="fas-arrow-left" IconColor="White" Command="{Binding CloseClicked}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid>
+            <ScrollView IsVisible="{Binding IsControlsVisible}">
+                <StackLayout Spacing="0" Padding="15">
+                    <ListView 
+                        ItemsSource="{Binding TicketsSettings}"
+                        x:Name="TicketsSettings"
+                        ItemTapped="SettingTapped"  
+                        CachingStrategy="RetainElement">
+                        <!--Built in Cells-->
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Grid Padding="0" Margin="5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <iconize:IconLabel Grid.Column="1" 
+                                                           Text="{Binding Visible, Mode=TwoWay, Converter={StaticResource BooleanToIconConverter}}" 
+                                                           TextColor="{StaticResource Primary}" 
+                                                           FontSize="Large" 
+                                                           HorizontalOptions="Start"
+                                                           VerticalTextAlignment="Center"
+                                                           HorizontalTextAlignment="Start"/>
+                                        <Label Grid.Column="2" FontSize="Small" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start" Text="{Binding ProductName}"/>
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+            </ScrollView>
+            <ActivityIndicator
+                HorizontalOptions="CenterAndExpand" 
+                VerticalOptions="CenterAndExpand" 
+                IsVisible="{Binding IsBusy}" 
+                IsRunning="{Binding IsBusy}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

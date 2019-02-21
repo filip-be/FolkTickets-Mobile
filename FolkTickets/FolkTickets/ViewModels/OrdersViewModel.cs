@@ -5,13 +5,13 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using FolkTickets.Views;
-using FolkTickets.Helpers;
+using FolkTickets.Models;
 using ZXing.Net.Mobile.Forms;
 using ZXing.Mobile;
 using System.Windows.Input;
 using FolkTickets.Services;
-using FolkTickets.Models;
-using FormsPlugin.Iconize;
+using FolkTickets.Helpers;
+using Plugin.Iconize;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Globalization;
@@ -27,8 +27,14 @@ namespace FolkTickets.ViewModels
         /// List of items
         /// </summary>
         public ObservableCollection<MobileOrder> Items { get; protected set; }
-        // BFT orders list
+        /// <summary>
+        /// BFT orders list
+        /// /// </summary>
         protected IEnumerable<MobileOrder> Orders { get; set; }
+        /// <summary>
+        /// Tickets settings
+        /// </summary>
+        private IList<MobileTicketSetting> TicketsSettings { get; set; }
         /// <summary>
         /// QR scan button clicked command
         /// </summary>
@@ -46,9 +52,17 @@ namespace FolkTickets.ViewModels
         /// </summary>
         public ICommand ShowStatsCommand { get; protected set; }
         /// <summary>
+        /// Settings command
+        /// </summary>
+        public ICommand SettingsCommand { get; protected set; }
+        /// <summary>
         /// Private variable - search value
         /// </summary>
         private string _SearchText = string.Empty;
+        /// <summary>
+        /// Orders settings page
+        /// </summary>
+        private OrdersSettingsPage _OrdersSettingsPage { get; set; }
         /// <summary>
         /// Search value
         /// </summary>
@@ -94,7 +108,12 @@ namespace FolkTickets.ViewModels
             SearchCommand = new Command(FindOrder);
             LoadAllOrdersCommand = new Command(LoadAllOrders);
             ShowStatsCommand = new Command(ShowStats);
+            SettingsCommand = new Command(EditSettings);
             PropertyChanged += OnSearchTextChanged;
+            MessagingCenter.Subscribe<OrdersSettingsViewModel>(this, "FilterOrders", (sender) =>
+            {
+                FilterOrders();
+            });
         }
 
         private void OnSearchTextChanged(object sender, PropertyChangedEventArgs e)
@@ -181,6 +200,40 @@ namespace FolkTickets.ViewModels
             }
         }
 
+        private void EditSettings()
+        {
+            try
+            {
+                if (!(App.Current.MainPage is IconNavigationPage)
+                        || !((App.Current.MainPage as IconNavigationPage)?.CurrentPage is IconTabbedPage))
+                {
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = "Logged succesfully, but there are invalid application pages. Cannot proceed!",
+                        Cancel = "OK"
+                    });
+                    return;
+                }
+                IconTabbedPage tabbedPage = (App.Current.MainPage as IconNavigationPage).CurrentPage as IconTabbedPage;
+
+                OrdersSettingsViewModel model = new OrdersSettingsViewModel(TicketsSettings);
+
+                _OrdersSettingsPage = new OrdersSettingsPage(model);
+                tabbedPage.Children.Add(_OrdersSettingsPage);
+                tabbedPage.SelectedItem = _OrdersSettingsPage;
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = string.Format("Could not load orders settings: {0}", ex.Message),
+                    Cancel = "OK"
+                });
+            }
+        }
+
         /// <summary>
         /// Load all WC orders
         /// </summary>
@@ -193,11 +246,19 @@ namespace FolkTickets.ViewModels
             try
             {
                 Orders = await WCService.GetAllWCOrders();
-                Items.Clear();
-                foreach (var order in Orders)
+                if (TicketsSettings == null)
                 {
-                    Items.Add(order);
+                    TicketsSettings = new List<MobileTicketSetting>();
                 }
+                TicketsSettings = TicketsSettings
+                    .Concat(
+                        Orders
+                            .SelectMany(o => o.Tickets)
+                            .Where(t => !TicketsSettings.Any(et => et.TicketID == t.TicketID))
+                            .Select(t => new MobileTicketSetting { TicketID = t.TicketID, Visible = true })
+                            .Distinct()
+                        ).ToList();
+                FilterOrders();
                 LoadAllOrdersText = "Reload orders";
             }
             catch (Exception ex)
@@ -212,6 +273,21 @@ namespace FolkTickets.ViewModels
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        /// <summary>
+        /// Filter displayed orders
+        /// </summary>
+        private void FilterOrders()
+        {
+            Items.Clear();
+
+            // Show only orders with visible tickets
+            foreach (var order in Orders
+                .Where(o => TicketsSettings.Any(t => t.Visible && t.Equals(o))))
+            {
+                Items.Add(order);
             }
         }
 

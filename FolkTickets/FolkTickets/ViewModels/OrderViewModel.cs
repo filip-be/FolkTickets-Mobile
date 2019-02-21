@@ -1,7 +1,7 @@
-﻿using FolkTickets.Helpers;
-using FolkTickets.Models;
+﻿using FolkTickets.Models;
+using FolkTickets.Helpers;
 using FolkTickets.Services;
-using FormsPlugin.Iconize;
+using Plugin.Iconize;
 using System;
 using System.Collections.Generic;
 using System.Linq;

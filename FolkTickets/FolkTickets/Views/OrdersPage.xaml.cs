@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using FolkTickets.ViewModels;
-using FolkTickets.Helpers;
-using ZXing.Net.Mobile.Forms;
 using FolkTickets.Models;
+using ZXing.Net.Mobile.Forms;
+using FolkTickets.Helpers;
 
 namespace FolkTickets.Views
 {

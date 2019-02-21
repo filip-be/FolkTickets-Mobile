@@ -26,13 +26,14 @@ using Android.App;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.2.0")]
-[assembly: AssemblyFileVersion("1.2.2.0")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]
 
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.Camera)]
 [assembly: UsesPermission(Android.Manifest.Permission.Flashlight)]
+[assembly: UsesPermission(Android.Manifest.Permission.ReadExternalStorage)]
 
 #if DEBUG
 [assembly: Application(Debuggable=true)]

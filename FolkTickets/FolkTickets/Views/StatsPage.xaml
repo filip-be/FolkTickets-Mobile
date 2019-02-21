@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
              xmlns:xfProxy="clr-namespace:Xamarin.Forms.Proxy;assembly=Xamarin.Forms.Core.UnitTests"
+             xmlns:controls="clr-namespace:FolkTickets.Controls"
              x:Class="FolkTickets.Views.StatsPage"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems>
-        <iconize:IconToolbarItem Icon="fa-times" IconColor="White" Command="{Binding CloseClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-refresh" IconColor="White" Command="{Binding RefreshClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-times" IconColor="White" Command="{Binding CloseClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-sync-alt" IconColor="White" Command="{Binding RefreshClicked}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid>
@@ -27,14 +28,12 @@
                                         </Grid.ColumnDefinitions>
                                         <Label Text="{Binding Event}" FontSize="Small" Grid.Row="0"/>
                                         <Label Text="{Binding Product}" FontSize="Medium" Grid.Row="1" Grid.Column="0"/>
-                                        <Label FontSize="Medium" Grid.Row="1" Grid.Column="1">
-                                            <Label.Text>
-                                                <xfProxy:MultiBinding StringFormat="{}{0}/{1}">
-                                                    <Binding Path="CheckedTickets"/>
-                                                    <Binding Path="TicketsCount"/>
-                                                </xfProxy:MultiBinding>
-                                            </Label.Text>
-                                        </Label>
+                                        <controls:StringFormatLabel FontSize="Medium" Grid.Row="1" Grid.Column="1" StringFormat="{}{0}/{1}">
+                                            <controls:StringFormatLabel.FormatValues>
+                                                <controls:TextValue Text="{Binding CheckedTickets}" />
+                                                <controls:TextValue Text="{Binding TicketsCount}"/>
+                                            </controls:StringFormatLabel.FormatValues>
+                                        </controls:StringFormatLabel>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>

@@ -8,9 +8,9 @@ namespace FolkTickets.Controls
 {
     public class TicketStatusToIconConverter : IValueConverter
     {
-        private string IconUnknown { get; set; } = "fa-question";
-        private string IconNew { get; set; } = "fa-sticky-note";
-        private string IconChecked { get; set; } = "fa-check-square";
+        private string IconUnknown { get; set; } = "fas-question";
+        private string IconNew { get; set; } = "fas-sticky-note";
+        private string IconChecked { get; set; } = "fas-check-square";
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

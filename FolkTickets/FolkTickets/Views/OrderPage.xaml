@@ -2,11 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FolkTickets.Views.OrderPage"
-             xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
-             xmlns:xfProxy="clr-namespace:Xamarin.Forms.Proxy;assembly=Xamarin.Forms.Core.UnitTests"
-             xmlns:local="clr-namespace:FolkTickets"
-             xmlns:helper="clr-namespace:FolkTickets.Helpers"
-             xmlns:vm="clr-namespace:FolkTickets.ViewModels"
+             xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+             xmlns:controls="clr-namespace:FolkTickets.Controls"
              xmlns:fc="clr-namespace:FolkTickets.Controls"
              Title="Order">
     <ContentPage.Resources>
@@ -18,12 +15,12 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <iconize:IconToolbarItem Icon="fa-times" IconColor="White" Command="{Binding CloseClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-lock" IconColor="White" Command="{Binding AllowEditAllClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-file-text" IconColor="White" Command="{Binding AddNoteClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-info" IconColor="White" Command="{Binding InfoClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-refresh" IconColor="White" Command="{Binding RefreshClicked}"/>
-        <iconize:IconToolbarItem Icon="fa-check" IconColor="White" Command="{Binding UpdateClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-times" IconColor="White" Command="{Binding CloseClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-lock" IconColor="White" Command="{Binding AllowEditAllClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-file-alt" IconColor="White" Command="{Binding AddNoteClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-info" IconColor="White" Command="{Binding InfoClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-sync-alt" IconColor="White" Command="{Binding RefreshClicked}"/>
+        <iconize:IconToolbarItem Icon="fas-check" IconColor="White" Command="{Binding UpdateClicked}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid>
@@ -39,28 +36,22 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
-                            <Label.Text>
-                                <xfProxy:MultiBinding StringFormat="Order: {0}">
-                                    <Binding Path="Order.OrderId"/>
-                                </xfProxy:MultiBinding>
-                            </Label.Text>
-                        </Label>
+                        <controls:StringFormatLabel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" StringFormat="Order: {0}" BindingContext="{Binding Order}">
+                            <controls:StringFormatLabel.FormatValues>
+                                <controls:TextValue Text="{Binding OrderId}" />
+                            </controls:StringFormatLabel.FormatValues>
+                        </controls:StringFormatLabel>
                         <Label Text="{Binding Order.CustomerName}" Grid.Column="0" Grid.Row="1"/>
-                        <Label Grid.Column="1" Grid.Row="1">
-                            <Label.Text>
-                                <xfProxy:MultiBinding StringFormat="Status: {0}">
-                                    <Binding Path="Order.Status"/>
-                                </xfProxy:MultiBinding>
-                            </Label.Text>
-                        </Label>
-                        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2">
-                            <Label.Text>
-                                <xfProxy:MultiBinding StringFormat="{}{0}">
-                                    <Binding Path="Order.CustomerNote"/>
-                                </xfProxy:MultiBinding>
-                            </Label.Text>
-                        </Label>
+                        <controls:StringFormatLabel Grid.Column="1" Grid.Row="1" StringFormat="Status: {0}" BindingContext="{Binding Order}">
+                            <controls:StringFormatLabel.FormatValues>
+                                <controls:TextValue Text="{Binding Status}" />
+                            </controls:StringFormatLabel.FormatValues>
+                        </controls:StringFormatLabel>
+                        <controls:StringFormatLabel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" StringFormat="{}{0}" BindingContext="{Binding Order}">
+                            <controls:StringFormatLabel.FormatValues>
+                                <controls:TextValue Text="{Binding CustomerNote}" />
+                            </controls:StringFormatLabel.FormatValues>
+                        </controls:StringFormatLabel>
                     </Grid>
                     <ListView 
                         ItemsSource="{Binding Order.Tickets}" 

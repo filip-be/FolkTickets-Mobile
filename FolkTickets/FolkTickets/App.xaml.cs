@@ -1,6 +1,6 @@
 ﻿using FolkTickets.ViewModels;
 using FolkTickets.Views;
-using FormsPlugin.Iconize;
+using Plugin.Iconize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace FolkTickets
         public App()
         {
             InitializeComponent();
-            
+
             var tabbedPage = new IconTabbedPage
             {
                 Children =
@@ -25,12 +25,12 @@ namespace FolkTickets
                     new LoginPage()
                     {
                         Title = "Login",
-                        Icon = "fa-sign-in"
+                        Icon = "fas-sign-in-alt"
                     },
                 }
             };
 
-            Current.MainPage = new IconNavigationPage(tabbedPage);
+            MainPage = new IconNavigationPage(tabbedPage);
         }
 
         protected override void OnStart()

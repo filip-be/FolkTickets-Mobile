@@ -55,7 +55,7 @@ namespace FolkTickets.Services
         {
             if (userAccount == null)
             {
-                userAccount = AccountStore.Create(Forms.Context).FindAccountsForService(App.AppName).FirstOrDefault();
+                userAccount = AccountStore.Create(Android.App.Application.Context).FindAccountsForService(App.AppName).FirstOrDefault();
             }
 
             if (userAccount == null)
@@ -189,6 +189,40 @@ namespace FolkTickets.Services
 
                 // Copy array
                 return statistics.Select(s => new Statistic(s));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get BFT ticket with details
+        /// </summary>
+        /// <param name="ticketId">Ticket Id</param>
+        public static async Task<MobileTicket> GetBFTTicket(int ticketId)
+        {
+            try
+            {
+                WCObject api = GetWCApiObject(null);
+
+                MobileTicket ticket = new MobileTicket
+                {
+                    TicketID = ticketId
+                };
+                BFTTicket bftTicket = await api.BFTTicket.Get((int)ticket.TicketID);
+
+                ticket.ProductID = bftTicket.ProductID;
+                ticket.EventID = bftTicket.EventID;
+
+                BFTEvent bftEvent = await api.BFTEvent.Get((int)ticket.EventID);
+                ticket.EventName = bftEvent.Name;
+
+                Product product = await api.Product.Get((int)ticket.ProductID);
+                ticket.ProductName = product.name;
+                ticket.ProductShortDescription = product.short_description;
+
+                return ticket;
             }
             catch (Exception)
             {
