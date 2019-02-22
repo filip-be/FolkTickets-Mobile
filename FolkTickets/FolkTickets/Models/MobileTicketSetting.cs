@@ -44,7 +44,7 @@ namespace FolkTickets.Models
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return TicketID ?? 0;
+            return ProductID.HasValue ? $"P{ProductID}".GetHashCode() : $"T{TicketID}".GetHashCode();
         }
     }
 }

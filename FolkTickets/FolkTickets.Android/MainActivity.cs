@@ -8,11 +8,17 @@ using System.Net;
 using Plugin.Iconize;
 using FolkTickets.Views;
 using Xamarin.Forms;
+using System.IO;
 
 namespace FolkTickets.Droid
 {
 	[Activity (Label = "FolkTickets", Icon = "@drawable/icon", Theme="@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    [IntentFilter(new[] { global::Android.Content.Intent.ActionView },
+            Categories = new[] { global::Android.Content.Intent.CategoryDefault, global::Android.Content.Intent.CategoryBrowsable },
+            DataScheme = "file",
+            DataHost = "*",
+            DataPathPattern = ".*\\\\.bft")]
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -20,7 +26,7 @@ namespace FolkTickets.Droid
 
             TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar; 
-
+            
 			base.OnCreate (bundle);
 
             Xamarin.Forms.Forms.Init (this, bundle);
@@ -33,7 +39,7 @@ namespace FolkTickets.Droid
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
-            LoadApplication (new App());
+            LoadApplication (new App(Intent?.Data?.Path));
 		}
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)

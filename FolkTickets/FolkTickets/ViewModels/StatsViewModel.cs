@@ -94,7 +94,7 @@ namespace FolkTickets.ViewModels
                 var statistics = await WCService.GetStatistics();
                 StatsList = statistics.OrderBy(s => s.Event).ThenBy(s => s.Product).ToList();
                 Stats.Clear();
-                foreach (var stat in StatsList)
+                foreach (var stat in StatsList.OrderBy(s => s.Product))
                 {
                     Stats.Add(stat);
                 }

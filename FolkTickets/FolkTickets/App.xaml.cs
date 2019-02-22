@@ -14,7 +14,7 @@ namespace FolkTickets
     {
         public static string AppName { get; private set; } = "FolkTickets";
 
-        public App()
+        public App(string inputFile)
         {
             InitializeComponent();
 
@@ -22,7 +22,7 @@ namespace FolkTickets
             {
                 Children =
                 {
-                    new LoginPage()
+                    new LoginPage(inputFile, true)
                     {
                         Title = "Login",
                         Icon = "fas-sign-in-alt"

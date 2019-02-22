@@ -200,7 +200,7 @@ namespace FolkTickets.Services
         /// Get BFT ticket with details
         /// </summary>
         /// <param name="ticketId">Ticket Id</param>
-        public static async Task<MobileTicket> GetBFTTicket(int ticketId)
+        public static async Task<MobileTicket> GetBFTTicket(int ticketId, bool skipEventName = false)
         {
             try
             {
@@ -215,8 +215,11 @@ namespace FolkTickets.Services
                 ticket.ProductID = bftTicket.ProductID;
                 ticket.EventID = bftTicket.EventID;
 
-                BFTEvent bftEvent = await api.BFTEvent.Get((int)ticket.EventID);
-                ticket.EventName = bftEvent.Name;
+                if (!skipEventName)
+                {
+                    BFTEvent bftEvent = await api.BFTEvent.Get((int)ticket.EventID);
+                    ticket.EventName = bftEvent.Name;
+                }
 
                 Product product = await api.Product.Get((int)ticket.ProductID);
                 ticket.ProductName = product.name;

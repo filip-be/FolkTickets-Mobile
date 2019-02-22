@@ -108,7 +108,7 @@ namespace FolkTickets.ViewModels
                     }
 
                     // Read ticket info
-                    var ticketInfo = await WCService.GetBFTTicket((int)ticket.TicketID);
+                    var ticketInfo = await WCService.GetBFTTicket((int)ticket.TicketID, true);
 
                     // Update ticket
                     ticket.ProductID = ticketInfo.ProductID;
@@ -119,7 +119,7 @@ namespace FolkTickets.ViewModels
                 }
 
                 // Refresh settings
-                TicketsSettings = _TicketsSettings.Distinct().ToList();
+                TicketsSettings = _TicketsSettings.Distinct().OrderBy(t => t.ProductName).ToList();
             }
             catch(Exception ex)
             {
@@ -169,7 +169,7 @@ namespace FolkTickets.ViewModels
 
                 // Refresh settings
                 TicketsSettings = null;
-                TicketsSettings = _TicketsSettings.Distinct().ToList();
+                TicketsSettings = _TicketsSettings.Distinct().OrderBy(t => t.ProductName).ToList();
 
                 // Filter orders
                 MessagingCenter.Send(this, "FilterOrders");

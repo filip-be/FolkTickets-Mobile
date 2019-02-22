@@ -132,7 +132,7 @@ namespace FolkTickets.ViewModels
         /// <summary>
         /// Default constructor
         /// </summary>
-        public LoginViewModel() : base()
+        public LoginViewModel(string inputFile) : base()
         {
             // Page title
             Title = "Login";
@@ -172,12 +172,31 @@ namespace FolkTickets.ViewModels
                 {
                     bool.TryParse(userAccount.Properties["UseSSL"], out _UseSSL);
                 }
+
+                if (!string.IsNullOrEmpty(currentLang))
+                {
+                    Language = Languages.Where(c => c.Name == currentLang).FirstOrDefault();
+                }
             }
 
-            if (!string.IsNullOrEmpty(currentLang))
+            // Import settings from file if provided
+            if(!string.IsNullOrWhiteSpace(inputFile))
             {
-                Language = Languages.Where(c => c.Name == currentLang).FirstOrDefault();
+                try
+                {
+                    ImportSettingsFromFile(new StreamReader(inputFile));
+                }
+                catch(Exception ex)
+                {
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = $"Error reading {inputFile}: {ex.Message}",
+                        Cancel = "OK"
+                    });
+                }
             }
+
             if (Language == null)
             {
                 Language = CultureInfo.CurrentCulture;
@@ -199,28 +218,7 @@ namespace FolkTickets.ViewModels
                 var file = await CrossFilePicker.Current.PickFile();
                 if(file != null)
                 {
-                    using (var jsonReader = new JsonTextReader(new StreamReader(file.GetStream())))
-                    {
-                        var serializer = new JsonSerializer();
-                        SettingsFile settings = serializer.Deserialize<SettingsFile>(jsonReader);
-                        if(settings == null)
-                        {
-                            // Error importing settings
-                            MessagingCenter.Send(this, "Error", new MessagingCenterAlert
-                            {
-                                Title = "Error",
-                                Message = "Unknown error reading settings file",
-                                Cancel = "OK"
-                            });
-                            return;
-                        }
-
-                        PageUri = settings.Uri;
-                        UseSSL = settings.UseSsl;
-                        ApiKey = settings.ApiKey;
-                        ApiSecret = settings.ApiSecret;
-                        Language = Languages.FirstOrDefault(l => l.Name.Equals(settings.Language));
-                    }
+                    ImportSettingsFromFile(new StreamReader(file.GetStream()));
                 }
             }
             catch(Exception ex)
@@ -237,6 +235,36 @@ namespace FolkTickets.ViewModels
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        /// <summary>
+        /// Import settings from file
+        /// </summary>
+        /// <param name="file">StreamReader</param>
+        private void ImportSettingsFromFile(StreamReader file)
+        {
+            using (var jsonReader = new JsonTextReader(file))
+            {
+                var serializer = new JsonSerializer();
+                SettingsFile settings = serializer.Deserialize<SettingsFile>(jsonReader);
+                if (settings == null)
+                {
+                    // Error importing settings
+                    MessagingCenter.Send(this, "Error", new MessagingCenterAlert
+                    {
+                        Title = "Error",
+                        Message = "Unknown error reading settings file",
+                        Cancel = "OK"
+                    });
+                    return;
+                }
+
+                PageUri = settings.Uri;
+                UseSSL = settings.UseSsl;
+                ApiKey = settings.ApiKey;
+                ApiSecret = settings.ApiSecret;
+                Language = Languages.FirstOrDefault(l => l.Name.Equals(settings.Language));
             }
         }
 
@@ -259,6 +287,7 @@ namespace FolkTickets.ViewModels
             {
                 // Get user account from app store
                 userAccount = AccountStore.Create(Android.App.Application.Context).FindAccountsForService(App.AppName).FirstOrDefault();
+                
                 // Get user input only if requested
                 if (useUserInput)
                 {

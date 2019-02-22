@@ -8,15 +8,15 @@ namespace FolkTickets.Views
 	{
         private LoginViewModel ViewModel;
         
-        public LoginPage(bool tryToLogin = true)
+        public LoginPage(string inputFile, bool tryToLogin)
 		{
 			InitializeComponent();
 
-            BindingContext = ViewModel = new LoginViewModel();
+            BindingContext = ViewModel = new LoginViewModel(inputFile);
             
             if (tryToLogin)
             {
-                ViewModel.LoginClicked.Execute(false);
+                ViewModel.LoginClicked.Execute(!string.IsNullOrWhiteSpace(inputFile));
             }
         }
 

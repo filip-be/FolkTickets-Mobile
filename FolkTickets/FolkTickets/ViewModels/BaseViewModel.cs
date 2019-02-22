@@ -30,7 +30,7 @@ namespace FolkTickets.ViewModels
             {
                 IconTabbedPage tabbedPage = (App.Current.MainPage as NavigationPage).CurrentPage as IconTabbedPage;
                 tabbedPage.Children.Clear();
-                tabbedPage.Children.Add(new LoginPage(false));
+                tabbedPage.Children.Add(new LoginPage(null, false));
             }
         }
 
