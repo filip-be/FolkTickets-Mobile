@@ -148,6 +148,7 @@ namespace FolkTickets.ViewModels
                             || ci.IndexOf(o.CustomerMail, SearchText, co) != -1
                             || ci.IndexOf(o.OrderKey, SearchText, co) != -1
                             || (o.Tickets != null && o.Tickets.Where(t => ci.IndexOf(t.Hash, SearchText, co) != -1).Any())
+                            || (o.Tickets != null && o.Tickets.Where(t => ci.IndexOf(t.TicketID.ToString(), SearchText, co) == 0).Any())
                             );
 
                     Items.Clear();
